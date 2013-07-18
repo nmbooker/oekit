@@ -3,6 +3,11 @@
 
 Author: Nick Booker
 License: MIT License
+
+Here are some of the modules:
+    oeproxy: simplifies talking to an OpenERP server via XML-RPC a bit
+    oe_client_env: get login info and an OEProxy using data from environment variables
+    csvdump: helpers for dumping out records to CSV files
 """
 
 __COPYRIGHT__ = """The MIT License (MIT)
