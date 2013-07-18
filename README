@@ -1,0 +1,9 @@
+OpenERP Kit
+===========
+
+Author: Nick Booker
+License: MIT
+
+oekit is a collection of libraries and utilities to make interacting with
+an OpenERP server from scripts and Python prompts that little bit
+easier, with that bit less repeition.
