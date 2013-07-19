@@ -67,9 +67,24 @@ def get_rows(oe_proxy, model, ids, fields):
     rows = []
     rows.append(fields)
     for record in records:
-        row = [record[field] for field in fields]
+        row = [_fixup_value(record[field]) for field in fields]
         rows.append(row)
     return rows
+
+def _cvtunicode(obj):
+    if isinstance(obj, unicode):
+        return obj.encode('utf-8')
+    else:
+        return obj
+
+def _fixid(obj):
+    if isinstance(obj, list):
+        return obj[0]   # this would be the id in an [id, string] pair
+    else:
+        return obj
+
+def _fixup_value(obj):
+    return _fixid(_cvtunicode(obj))
 
 def write_rows(fileobj, rows):
     """Write the given rows as CSV to the given fileobj in default format.
@@ -79,7 +94,6 @@ def write_rows(fileobj, rows):
     csv_write_rows(sys.stdout, [['name', 'email'], ['Fred', 'fred@example.org']]
     """
     writer = csv.writer(fileobj)
-    rows = csv_rows(oe_proxy, model, ids, fields)
     for row in rows:
         writer.writerow(row)
     return
