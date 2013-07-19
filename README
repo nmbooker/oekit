@@ -7,3 +7,45 @@ License: MIT
 oekit is a collection of libraries and utilities to make interacting with
 an OpenERP server from scripts and Python prompts that little bit
 easier, with that bit less repeition.
+
+
+Modules
+-------
+
+Take a look at the pydoc for those:
+
+$ pydoc oekit
+$ pydoc oekit.oeproxy
+$ pydoc oekit.oe_client_env
+$ pydoc oekit.csvdump
+
+
+Scripts
+-------
+
+oe_dump_csv
+...........
+
+Dump the contents of an OpenERP model as CSV.
+
+$ export OE_CLIENT_URL=http://localhost:8069
+$ export OE_CLIENT_DBNAME=mytestdb
+$ export OE_CLIENT_USER=admin
+$ export OE_CLIENT_PASSWORD=password
+$ oe_dump_csv res.partner id name
+id,name
+1,Fred Bloggs
+2,A Company
+
+You might want to pip install csvkit.
+
+Then you can get the output in a nice tabular format:
+
+$ oe_dump_csv res.partner id name | csvlook
+|-----+--------------|
+|  id | name         |
+|-----+--------------|
+|  1  | Fred Bloggs  |
+|  2  | A Company    |
+|-----+--------------|
+
