@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name = 'oekit',
-    version = '0.1',
+    version = '0.2',
     packages = setuptools.find_packages(),
     scripts = ['oe_dump_csv'],
 )
