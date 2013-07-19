@@ -1,0 +1,30 @@
+#! /usr/bin/env python
+
+"""Dump records from an OpenERP model into CSV.
+"""
+
+import sys
+import argparse
+
+from oekit import oe_client_env, csvdump
+
+def main(options):
+    """Main program."""
+    oe = oe_client_env.OEClientEnv().get_proxy()
+    csvdump.dump_csv(oe, options.model_name, options.fields, outfile=sys.stdout)
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+               description="Dump the contents of an OpenERP model to CSV",
+             )
+    # parser.add_argument() calls here
+    parser.add_argument('model_name', help='name of model e.g. res.partner')
+    parser.add_argument('fields', nargs='+', help='fields you want')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
