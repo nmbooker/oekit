@@ -8,6 +8,7 @@ Here are some of the modules:
     oeproxy: simplifies talking to an OpenERP server via XML-RPC a bit
     oe_client_env: get login info and an OEProxy using data from environment variables
     csvdump: helpers for dumping out records to CSV files
+    oe_dateutil: helpers for validating, formatting and parsing dates for OpenERP
 """
 
 __COPYRIGHT__ = """The MIT License (MIT)
