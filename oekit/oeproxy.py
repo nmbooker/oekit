@@ -49,7 +49,7 @@ class OEProxy(object):
         args: The arguments (positional) to pass to the method.
         """
         if not self._uid:
-            raise NoLoggedInError('not logged in - call login method first')
+            raise NotLoggedInError('not logged in - call login method first')
         result = self._sock.execute(
             self._dbname,
             self._uid,
