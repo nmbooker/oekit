@@ -63,11 +63,12 @@ def get_rows(oe_proxy, model, ids, fields):
     ids: The ids of the records to dump.
     fields: The fields you want from those records.
     """
+    schema = oe_proxy.execute(model, 'fields_get')
     records = oe_proxy.execute(model, 'read', ids, fields)
     rows = []
     rows.append(fields)
     for record in records:
-        row = [_fixup_value(record[field]) for field in fields]
+        row = [_fixup_value(schema, field, record[field]) for field in fields]
         rows.append(row)
     return rows
 
@@ -77,14 +78,18 @@ def _cvtunicode(obj):
     else:
         return obj
 
-def _fixid(obj):
-    if isinstance(obj, list):
-        return obj[0]   # this would be the id in an [id, string] pair
+def _fixid(schema, field, obj):
+    if field == 'id':
+        return obj      # doesn't sit in schema
+    elif schema[field]['type'] == 'one2many':
+        return ';'.join(map(unicode, sorted(obj)))
+    elif schema[field]['type'] == 'many2one':
+        return obj[0] if obj else None
     else:
         return obj
 
-def _fixup_value(obj):
-    return _fixid(_cvtunicode(obj))
+def _fixup_value(schema, field, obj):
+    return _fixid(schema, field, _cvtunicode(obj))
 
 def write_rows(fileobj, rows):
     """Write the given rows as CSV to the given fileobj in default format.
