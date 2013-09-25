@@ -62,6 +62,21 @@ class OEClientEnv(object):
         oe.login(self.dbname, self.user, self.password)
         return oe
 
+    def get_erppeek_client(self, verbose=False):
+        """Return a new erppeek.Client.
+
+        Note you must have the erppeek package in the python path
+        for this to work, or you will get an ImportError on call.
+        """
+        import erppeek
+        return erppeek.Client(
+            server=self.url,
+            db=self.dbname,
+            user=self.user,
+            password=self.password,
+            verbose=verbose
+        )
+
     def _environ(self, suffix):
         """Return value of environment variable with given suffix."""
         return os.environ[self._var(suffix)]
