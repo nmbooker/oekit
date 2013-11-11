@@ -14,7 +14,7 @@ def main(options):
     cl = oe_client_env.OEClientEnv()
     oe = cl.get_proxy()
     outcsv = csv.writer(sys.stdout)
-    outcsv.writerow(['field_name', 'type', 'relation'])
+    outcsv.writerow(['field_name', 'type', 'relation', 'string'])
     fields = oe.execute(options.model_name, 'fields_get')
     outcsv.writerows(field_rows(fields))
     return
@@ -24,7 +24,7 @@ def field_rows(fields):
     return starmap(format_field_row, sorted(fields.items(), key=first))
 
 def format_field_row(name, field_dict):
-    return [name, field_dict['type'], field_dict.get('relation', '')]
+    return [name, field_dict['type'], field_dict.get('relation', ''), field_dict['string']]
 
 # for sorting
 def first(a_tuple):
