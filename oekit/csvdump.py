@@ -18,20 +18,26 @@ Otherwise you can use a combination of:
 import csv
 import sys
 
-def dump_csv(oe_proxy, model, fields, query=None, outfile=None):
+def dump_csv(oe_proxy, model, fields, ids=None, query=None, outfile=None):
     """Dump the model to outfile.
 
     oe_proxy: An OEProxy object to query.
     model: The name of the model to query.
     fields: The list of fields you want.
+    ids: The ids you want.  'query' and 'ids' are mutually exclusive.
     query: If specified, an OpenERP ORM query.  If omitted, all records are fetched.
     outfile: If specified, a file-like object to write the CSV to.  If omitted, it's written to STDOUT.
     """
+    if query and ids:
+        raise ValueError('ids and query are mutually exclusive')
     if not query:
         query = []
     if not outfile:
         outfile = sys.stdout
-    rows = get_search_rows(oe_proxy, model, query, fields)
+    if ids:
+        rows = get_rows(oe_proxy, model, ids, fields)
+    else:
+        rows = get_search_rows(oe_proxy, model, query, fields)
     write_rows(outfile, rows)
     return
 
