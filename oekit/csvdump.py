@@ -34,7 +34,7 @@ def dump_csv(oe_proxy, model, fields, ids=None, query=None, outfile=None):
         query = []
     if not outfile:
         outfile = sys.stdout
-    if ids:
+    if ids is not None:
         rows = get_rows(oe_proxy, model, ids, fields)
     else:
         rows = get_search_rows(oe_proxy, model, query, fields)
