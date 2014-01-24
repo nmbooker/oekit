@@ -1,0 +1,64 @@
+#! /usr/bin/env python
+
+"""List fields in an OpenERP model.
+"""
+
+import sys
+import argparse
+import csv
+from oekit import oe_client_env
+from itertools import starmap
+
+def main(options):
+    """Main program."""
+    cl = oe_client_env.OEClientEnv()
+    oe = cl.get_proxy()
+    heads = ['model', 'name', 'osv_memory', 'state']
+    model_ids = oe.execute('ir.model', 'search', [], 0, False, 'model,id')
+    models = oe.execute('ir.model', 'read', model_ids, heads)
+    if options.model_only:
+        sys.stdout.writelines(('%s\n' % m['model']) for m in models)
+    else:
+        outcsv = csv.DictWriter(sys.stdout, heads, extrasaction='ignore',)
+        outcsv.writeheader()
+        outcsv.writerows(models)
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+               description="get list of OpenERP models as a CSV report",
+             )
+    parser.add_argument('-m', '--model-only', action='store_true',
+        help='only list model codes, with no header'
+    )
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
+
+__COPYRIGHT__ = """The MIT License (MIT)
+
+Copyright (c) 2014 Nicholas Booker <NMBooker@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+"""
+
