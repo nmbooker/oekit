@@ -23,15 +23,19 @@ $ pydoc oekit.csvdump
 Scripts
 -------
 
-oe_dump_csv
-...........
-
-Dump the contents of an OpenERP model as CSV.
+Setting up your environment
+...........................
 
 $ export OE_CLIENT_URL=http://localhost:8069
 $ export OE_CLIENT_DBNAME=mytestdb
 $ export OE_CLIENT_USER=admin
 $ export OE_CLIENT_PASSWORD=password
+
+oe_dump_csv
+...........
+
+Dump the contents of an OpenERP model as CSV.
+
 $ oe_dump_csv res.partner id name
 id,name
 1,Fred Bloggs
@@ -49,3 +53,83 @@ $ oe_dump_csv res.partner id name | csvlook
 |  2  | A Company    |
 |-----+--------------|
 
+
+oe_dump_csv also accepts an option -i or --ids-stdin.
+
+If you provide this, stdin is read line-by-line.
+Each line is expected to contain a single id and nothing else.
+Only the records matching the ids on stdin are output.
+
+So in the above example data set you might get this:
+
+$ echo 1 | res.partner --ids-stdin id name | csvlook
+|-----+--------------|
+|  id | name         |
+|-----+--------------|
+|  1  | Fred Bloggs  |
+|-----+--------------|
+
+
+
+oe_describe
+...........
+
+Dump the list of fields in a model to CSV
+
+Adding '-n' would only display the field names, without a header.
+
+Note the implicit 'id' field isn't included in the output.
+
+$ ./oe_describe ir.cron | csvlook
+|------------------+-----------+-----------+----------------------|
+|  field_name      | type      | relation  | string               |
+|------------------+-----------+-----------+----------------------|
+|  active          | boolean   |           | Active               |
+|  args            | text      |           | Arguments            |
+|  doall           | boolean   |           | Repeat Missed        |
+|  function        | char      |           | Method               |
+|  interval_number | integer   |           | Interval Number      |
+|  interval_type   | selection |           | Interval Unit        |
+|  model           | char      |           | Object               |
+|  name            | char      |           | Name                 |
+|  nextcall        | datetime  |           | Next Execution Date  |
+|  numbercall      | integer   |           | Number of Calls      |
+|  priority        | integer   |           | Priority             |
+|  user_id         | many2one  | res.users | User                 |
+|------------------+-----------+-----------+----------------------|
+
+
+oe_list_models
+..............
+
+Dump a list of models.
+
+-M MODULE_NAME restricts the output to the models declared or subclassed by the given module
+
+-m only outputs the model (x.y.z) without a header, instead of a CSV table with other info
+
+This example restricts to a small module, because there are a lot if you leave it unrestricted.
+
+$ ./oe_list_models -M sale | csvlook
+|-------------------------------+-------------------------------+------------+--------|
+|  model                        | name                          | osv_memory | state  |
+|-------------------------------+-------------------------------+------------+--------|
+|  account.config.settings      | account.config.settings       | True       | base   |
+|  account.invoice              | Invoice                       | False      | base   |
+|  mail.compose.message         | Email composition wizard      | True       | base   |
+|  res.partner                  | Partner                       | False      | base   |
+|  sale.advance.payment.inv     | Sales Advance Payment Invoice | True       | base   |
+|  sale.config.settings         | sale.config.settings          | True       | base   |
+|  sale.make.invoice            | Sales Make Invoice            | True       | base   |
+|  sale.order                   | Sales Order                   | False      | base   |
+|  sale.order.line              | Sales Order Line              | False      | base   |
+|  sale.order.line.make.invoice | Sale OrderLine Make_invoice   | True       | base   |
+|  sale.report                  | Sales Orders Statistics       | False      | base   |
+|  sale.shop                    | Sales Shop                    | False      | base   |
+|-------------------------------+-------------------------------+------------+--------|
+
+
+Here's the number of models currently installed in my OpenERP test database:
+
+$ ./oe_list_models -m | wc -l
+364
