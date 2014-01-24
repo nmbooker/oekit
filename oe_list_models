@@ -14,8 +14,14 @@ def main(options):
     cl = oe_client_env.OEClientEnv()
     oe = cl.get_proxy()
     heads = ['model', 'name', 'osv_memory', 'state']
+    retrieve_fields = list(heads)
+    module = options.module
+    if 'modules' not in retrieve_fields and module:
+        retrieve_fields.append('modules')
     model_ids = oe.execute('ir.model', 'search', [], 0, False, 'model,id')
-    models = oe.execute('ir.model', 'read', model_ids, heads)
+    models = oe.execute('ir.model', 'read', model_ids, retrieve_fields)
+    if module:
+        models = [m for m in models if module in modules_of(m)]
     if options.model_only:
         sys.stdout.writelines(('%s\n' % m['model']) for m in models)
     else:
@@ -24,6 +30,9 @@ def main(options):
         outcsv.writerows(models)
     return
 
+def modules_of(model):
+    return model['modules'].split(', ')
+
 def get_options():
     """Get options for the script."""
     parser = argparse.ArgumentParser(
@@ -31,6 +40,9 @@ def get_options():
              )
     parser.add_argument('-m', '--model-only', action='store_true',
         help='only list model codes, with no header'
+    )
+    parser.add_argument('-M', '--module', default=None, type=str,
+        help='list only models touched by given module'
     )
     options = parser.parse_args()
     # extra processing of options here
