@@ -1,0 +1,66 @@
+#! /usr/bin/env python
+
+"""Dump records from an OpenERP model into JSON format.
+"""
+
+import sys
+import argparse
+import json
+
+from oekit import oe_client_env
+def main(options):
+    """Main program."""
+    oe = oe_client_env.OEClientEnv().get_proxy()
+    ids = get_ids(options, oe)
+    if ids:
+        records = oe.execute(options.model_name, 'read', ids, options.fields)
+        json.dump(records, sys.stdout)
+    else:
+        # ids was empty - don't call OpenERP again
+        pass
+    return
+
+def get_ids(options, oe):
+    if options.ids_stdin:
+        return [int(line.rstrip()) for line in sys.stdin]
+    else:
+        return oe.execute(options.model_name, 'search', [])
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+               description="Dump the contents of an OpenERP model to CSV",
+             )
+    # parser.add_argument() calls here
+    parser.add_argument('model_name', help='name of model e.g. res.partner')
+    parser.add_argument('fields', nargs='+', help='fields you want')
+    parser.add_argument('--ids-stdin', '-i', action='store_true', help='get only the ids from stdin')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
+
+
+
+__COPYRIGHT__ = """
+
+This program is part of oekit: https://github.com/nmbooker/oekit
+
+Copyright (c) 2013 Nicholas Booker <NMBooker@gmail.com>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+"""
