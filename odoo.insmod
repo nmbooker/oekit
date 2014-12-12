@@ -20,7 +20,7 @@ def main(options):
 def get_options():
     """Get options for the script."""
     parser = argparse.ArgumentParser(
-        description="DESCRIPTION",
+        description="Install or upgrade an Odoo module",
     )
     # parser.add_argument() calls here
     parser.add_argument('modules', nargs='+', help='name the modules to install')
