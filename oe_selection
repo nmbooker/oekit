@@ -1,0 +1,60 @@
+#! /usr/bin/env python
+
+"""List selection options for an Odoo selection field.
+"""
+
+import sys
+import argparse
+import csv
+from oekit import oe_client_env
+
+def main(options):
+    """Main program."""
+    cl = oe_client_env.OEClientEnv()
+    oe = cl.get_proxy()
+    fields = oe.execute(options.model_name, 'fields_get')
+    field = fields[options.field_name]
+    selection = field['selection']
+    outcsv = csv.writer(sys.stdout)
+    if not options.no_header_row:
+        outcsv.writerow(['name', 'string'])
+    outcsv.writerows(selection)
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+               description="get fields in an OpenERP model as CSV report",
+             )
+    # parser.add_argument() calls here
+    parser.add_argument('model_name', help='name of model')
+    parser.add_argument('field_name', help='name of the selection field')
+    parser.add_argument('-H', '--no-header-row', action='store_true', help='skip printing header row')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
+
+
+__COPYRIGHT__ = """
+
+This program is part of oekit: https://github.com/nmbooker/oekit
+
+Copyright (c) 2014 Nicholas Booker <NMBooker@gmail.com>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+"""
