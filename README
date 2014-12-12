@@ -8,6 +8,17 @@ oekit is a collection of libraries and utilities to make interacting with
 an OpenERP server from scripts and Python prompts that little bit
 easier, with that bit less repeition.
 
+It turns out, for use in scripts and debugging, there's a
+better module 'erppeek', which provides better proxies to the
+objects.
+
+However you might still find some of the command line tools provided
+here useful, or the ability to configure via environment variables.
+
+You can also use the method get_erppeek_client() on an OEClientEnv object
+to instantiate an erppeek.Client object based on your OE_CLIENT_*
+environment variables, should you so wish, if you have erppeek installed.
+
 
 Modules
 -------
