@@ -1,0 +1,41 @@
+#! /usr/bin/env python
+
+"""Make an Odoo database.
+"""
+
+import sys
+import argparse
+from oekit import oe_client_env
+import erppeek
+from funbox.once import Once        # Once actually constructs a thunk
+
+def main(options):
+    """Main program."""
+    db = options.dbname
+    master_passwd = options.master_password
+    env = Once(oe_client_env.OEClientEnv)
+    url = options.url or env().url
+    client = erppeek.Client(server=url)
+    database_exists = db in client.db.list()
+    if not database_exists:
+        sys.stderr.write("ERROR: Database %r does not exist\n" % db)
+        sys.exit(3)
+    else:
+        client.db.drop(master_passwd, db)
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Drop the given Odoo database",
+    )
+    # parser.add_argument() calls here
+    parser.add_argument('dbname', help='the name of the database to create')
+    parser.add_argument('-u', '--url', help='Override URL')
+    parser.add_argument('-P', '--master-password', default='admin', help='the master password if not admin')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())

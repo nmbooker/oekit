@@ -11,5 +11,8 @@ setuptools.setup(
         'oe_describe',
         'oe_list_models',
         'oe_selection',
+        'odoo.createdb',
+        'odoo.dropdb',
+        'odoo.insmod',
     ],
 )
