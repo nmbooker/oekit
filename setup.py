@@ -6,6 +6,7 @@ setuptools.setup(
     name = 'oekit',
     version = '0.12',
     packages = setuptools.find_packages(),
+    install_requires = ['erppeek>=1.6'],
     scripts = [
         'oe_dump_csv',
         'oe_describe',
