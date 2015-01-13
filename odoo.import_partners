@@ -1,0 +1,35 @@
+#! /usr/bin/env python
+
+"""Import partners from JSON array on stdin
+"""
+
+import sys
+import argparse
+import json
+from oekit.oe_client_env import OEClientEnv
+
+import logging
+
+_logger = logging.getLogger(__name__)
+
+def main(options):
+    """Main program."""
+    logging.basicConfig(level=logging.INFO)
+    odoo = OEClientEnv().get_erppeek_client()
+    res_partner = odoo.model('res.partner')
+    new_partners = json.load(sys.stdin)
+    for partner_data in new_partners:
+        _logger.info("Creating partner %r..." % (partner_data['name']))
+        res_partner.create(partner_data)
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Import partners from a JSON array",
+    )
+    options = parser.parse_args()
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
