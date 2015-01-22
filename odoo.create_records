@@ -6,6 +6,8 @@
 import sys
 import argparse
 import json
+import xmlrpclib
+
 from oekit.oe_client_env import OEClientEnv
 
 import logging
@@ -16,18 +18,24 @@ def main(options):
     """Main program."""
     logging.basicConfig(level=logging.INFO)
     odoo = OEClientEnv().get_erppeek_client()
-    res_partner = odoo.model('res.partner')
-    new_partners = json.load(sys.stdin)
-    for partner_data in new_partners:
-        _logger.info("Creating partner %r..." % (partner_data['name']))
-        res_partner.create(partner_data)
+    odoo_model = odoo.model(options.model)
+    new_records = json.load(sys.stdin)
+    for index, record in enumerate(new_records):
+        try:
+            odoo_model.create(record)
+        except xmlrpclib.Fault as err:
+            _logger.error(format_fault(index, err))
     return
+
+def format_fault(index, err):
+    return "Import of record %5d failed: %s" % (index, err.faultCode,)
 
 def get_options():
     """Get options for the script."""
     parser = argparse.ArgumentParser(
-        description="Import partners from a JSON array",
+        description="Import new records from a JSON array",
     )
+    parser.add_argument('model', help='name of model to import records into')
     options = parser.parse_args()
     return options
 

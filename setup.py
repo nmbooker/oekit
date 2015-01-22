@@ -15,6 +15,6 @@ setuptools.setup(
         'odoo.createdb',
         'odoo.dropdb',
         'odoo.insmod',
-        'odoo.import_partners',
+        'odoo.create_records',
     ],
 )
