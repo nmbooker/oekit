@@ -22,7 +22,8 @@ def main(options):
     new_records = json.load(sys.stdin)
     for index, record in enumerate(new_records):
         try:
-            odoo_model.create(record)
+            rec = odoo_model.create(record)
+            print(rec.id)
         except xmlrpclib.Fault as err:
             _logger.error(format_fault(index, err))
     return
