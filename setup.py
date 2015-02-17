@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name = 'oekit',
-    version = '0.14',
+    version = '0.15',
     packages = setuptools.find_packages(),
     install_requires = ['erppeek>=1.6'],
     scripts = [
