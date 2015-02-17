@@ -37,8 +37,8 @@ def get_options():
     parser = argparse.ArgumentParser(
         description="Print to STDOUT the XMLID of the given record.  Returns error 4 and tells you on STDERR if no match.",
     )
-    parser.add_argument('--model', required=True, help='name of model')
-    parser.add_argument('--numeric-id', required=True, type=int, help='numeric id of the record')
+    parser.add_argument('model', help='name of model')
+    parser.add_argument('numeric_id', type=int, help='numeric id of the record')
     options = parser.parse_args()
     return options
 
