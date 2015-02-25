@@ -1,0 +1,29 @@
+#! /usr/bin/env python
+
+"""Make an Odoo database.
+"""
+
+import sys
+import argparse
+from oekit import oe_client_env
+
+def main(options):
+    """Main program."""
+    env = oe_client_env.OEClientEnv()
+    client = env.get_erppeek_client()
+    client.uninstall(options.module)
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Uninstall an Odoo module from the database",
+    )
+    # parser.add_argument() calls here
+    parser.add_argument('module', help='name the modules to delete')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
