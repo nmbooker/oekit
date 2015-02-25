@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-"""Make an Odoo database.
+"""Install or upgrade an Odoo module
 """
 
 import sys
@@ -30,11 +30,9 @@ def get_options():
     parser = argparse.ArgumentParser(
         description="Install or upgrade an Odoo module",
     )
-    # parser.add_argument() calls here
     parser.add_argument('modules', nargs='+', help='name the modules to install')
     parser.add_argument('-u', '--upgrade', action='store_true', help='update not install the listed modules')
     options = parser.parse_args()
-    # extra processing of options here
     return options
 
 if __name__ == "__main__":
