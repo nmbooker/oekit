@@ -15,6 +15,7 @@ setuptools.setup(
         'odoo.createdb',
         'odoo.dropdb',
         'odoo.insmod',
+        'odoo.rmmod',
         'odoo.create_records',
         'odoo.xmlid_of',
     ],
