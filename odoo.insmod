@@ -6,16 +6,24 @@
 import sys
 import argparse
 from oekit import oe_client_env
+from os.path import (abspath, basename)
 
 def main(options):
     """Main program."""
     env = oe_client_env.OEClientEnv()
     client = env.get_erppeek_client()
+    modules = map(resolve_module, options.modules)
     if options.upgrade:
-        client.upgrade(*options.modules)
+        client.upgrade(*modules)
     else:
-        client.install(*options.modules)
+        client.install(*modules)
     return
+
+def resolve_module(module):
+    if set('./').intersection(module):
+        return basename(abspath(module))
+    else:
+        return module
 
 def get_options():
     """Get options for the script."""
