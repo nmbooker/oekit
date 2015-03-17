@@ -20,13 +20,30 @@ def main(options):
     odoo = OEClientEnv().get_erppeek_client()
     odoo_model = odoo.model(options.model)
     new_records = json.load(sys.stdin)
+    if options.multi:
+        recs = create_multi(odoo_model, new_records)
+    else:
+        recs = create_singly(odoo_model, new_records)
+    return
+
+def create_singly(odoo_model, records):
     for index, record in enumerate(new_records):
         try:
             rec = odoo_model.create(record)
-            print(rec.id)
+            print(rec)
         except xmlrpclib.Fault as err:
             _logger.error(format_fault(index, err))
-    return
+
+def create_multi(odoo_model, records):
+    try:
+        recs = odoo_model.create_multi(records)
+    except xmlrpclib.Fault as err:
+        _logger.error('Import failed: %s' % (err.faultCode,))
+        _logger.error("Multi-user mode - whole upload failed, not continuing processing")
+    else:
+        for rec in recs:
+            print(rec)
+        
 
 def format_fault(index, err):
     return "Import of record %5d failed: %s" % (index, err.faultCode,)
@@ -37,6 +54,7 @@ def get_options():
         description="Import new records from a JSON array",
     )
     parser.add_argument('model', help='name of model to import records into')
+    parser.add_argument('--multi', action='store_true', help='send all objects at once to create_multi() method')
     options = parser.parse_args()
     return options
 
