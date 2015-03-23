@@ -17,33 +17,33 @@ _logger = logging.getLogger(__name__)
 def main(options):
     """Main program."""
     logging.basicConfig(level=logging.INFO)
-    odoo = OEClientEnv().get_erppeek_client()
-    odoo_model = odoo.model(options.model)
+    odoo = OEClientEnv().get_proxy()
+    odoo_model = odoo.get_model(options.model)
     new_records = json.load(sys.stdin)
     if options.multi:
-        recs = create_multi(odoo_model, new_records)
+        create_multi(odoo_model, new_records)
     else:
-        recs = create_singly(odoo_model, new_records)
+        create_singly(odoo_model, new_records)
     return
 
 def create_singly(odoo_model, records):
-    for index, record in enumerate(new_records):
+    for index, record in enumerate(records):
         try:
-            rec = odoo_model.create(record)
+            rec = odoo_model.execute('create', record)
             print(rec)
         except xmlrpclib.Fault as err:
             _logger.error(format_fault(index, err))
 
 def create_multi(odoo_model, records):
     try:
-        recs = odoo_model.create_multi(records)
+        recs = odoo_model.execute('create_multi', records)
     except xmlrpclib.Fault as err:
         _logger.error('Import failed: %s' % (err.faultCode,))
         _logger.error("Multi-user mode - whole upload failed, not continuing processing")
     else:
         for rec in recs:
             print(rec)
-        
+
 
 def format_fault(index, err):
     return "Import of record %5d failed: %s" % (index, err.faultCode,)
