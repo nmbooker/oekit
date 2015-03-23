@@ -67,6 +67,12 @@ class OEProxy(object):
         """
         return OEModelProxy(self, model_name)
 
+    def get_xmlid(self, xmlid):
+        """Return model_name,res_id for the given XMLID.
+        """
+        (_, model, res_id) = self.execute('ir.model.data', 'xmlid_lookup', xmlid)
+        return (model, res_id)
+
 
 class OEModelProxy(object):
     """Proxies an OpenERP model.
