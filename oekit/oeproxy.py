@@ -122,7 +122,7 @@ __COPYRIGHT__ = """
 
 This program is part of oekit: https://github.com/nmbooker/oekit
 
-Copyright (c) 2013 Nicholas Booker <NMBooker@gmail.com>
+Copyright (c) 2015 Nicholas Booker <NMBooker@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
