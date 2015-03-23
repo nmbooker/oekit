@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-"""Import partners from JSON array on stdin
+"""Import records from JSON array on stdin
 """
 
 import sys
