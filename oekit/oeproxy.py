@@ -91,12 +91,44 @@ class OEModelProxy(object):
         """
         return self._oe.execute(self._model_name, method_name, *args)
 
+    def search(self, domain):
+        """Return a list of ids of records matching domain.
+        """
+        return self.execute('search', domain)
+
+    def read(self, ids, fields):
+        """Return a list of dictionaries representing given ids.
+        """
+        return self.execute('read', ids, fields)
+
+    def make_lookup_mapping(self, key_field):
+        """Return a dictionary mapping the given key field to an id.
+
+        It's up to you to pick a key that is unique.
+
+        key_field: The name of the field, e.g. 'code' or 'name'
+
+        For example:
+            odoo.get_model('res.country').make_lookup_mapping('code')
+
+        That might return a dictionary looking something like this:
+            {
+                'GB': 1,
+                'FR': 2,
+                'IE': 3,
+                ...
+            }
+        """
+        ids = self.search([])
+        records = self.read(ids, ['id', key_field])
+        return {r[key_field]: r['id'] for r in records}
+
 
 __COPYRIGHT__ = """
 
 This program is part of oekit: https://github.com/nmbooker/oekit
 
-Copyright (c) 2013 Nicholas Booker <NMBooker@gmail.com>
+Copyright (c) 2015 Nicholas Booker <NMBooker@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
