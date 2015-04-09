@@ -18,5 +18,6 @@ setuptools.setup(
         'odoo.rmmod',
         'odoo.create_records',
         'odoo.xmlid_of',
+        'odoo.backupdb',
     ],
 )
