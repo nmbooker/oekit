@@ -101,7 +101,7 @@ class OEModelProxy(object):
         """
         return self.execute('read', ids, fields)
 
-    def make_lookup_mapping(self, key_field):
+    def make_lookup_mapping(self, key_field, ids=None):
         """Return a dictionary mapping the given key field to an id.
 
         It's up to you to pick a key that is unique.
@@ -119,7 +119,8 @@ class OEModelProxy(object):
                 ...
             }
         """
-        ids = self.search([])
+        if ids is None:
+            ids = self.search([])
         records = self.read(ids, ['id', key_field])
         return {r[key_field]: r['id'] for r in records}
 
