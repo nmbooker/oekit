@@ -1,0 +1,82 @@
+#! /usr/bin/env python
+
+"""DESCRIPTION
+"""
+
+import sys
+import argparse
+from oekit.oe_client_env import OEClientEnv
+
+import logging
+
+try:
+    from lxml import etree
+    logging.debug("running with lxml.etree")
+except ImportError:
+    try:
+        # Python 2.5
+        import xml.etree.cElementTree as etree
+        logging.debug("running with cElementTree on Python 2.5+")
+    except ImportError:
+        try:
+            # Python 2.5
+            import xml.etree.ElementTree as etree
+            logging.debug("running with ElementTree on Python 2.5+")
+        except ImportError:
+            try:
+                # normal cElementTree install
+                import cElementTree as etree
+                logging.debug("running with cElementTree")
+            except ImportError:
+                # normal ElementTree install
+                import elementtree.ElementTree as etree
+                logging.debug("running with ElementTree")
+
+
+def main(options):
+    """Main program."""
+    oe = OEClientEnv().get_proxy()
+    rec = oe.get_model(options.model).read(options.numeric_id, options.fields)
+    if not rec:
+        logging.error('Record %d not found in model %s' % (options.numeric_id, options.model))
+        sys.exit(4)
+    xml = generate_xml(rec, options.model, options.fields)
+    sys.stdout.write(etree.tostring(xml, pretty_print=True))
+
+def generate_xml(rec, model_name, fields):
+    root, data = make_root_data()
+    record = etree.SubElement(data, "record", id="TODO", model=model_name)
+    record.extend(
+        field_element(rec, field) for field in fields
+    )
+    return root
+
+def field_element(rec, field):
+    value = rec[field]
+    if value == False:
+        return etree.Element("field", name=field, eval="False")
+    else:
+        elem = etree.Element("field", name=field)
+        elem.text = rec[field] or ''
+        return elem
+
+def make_root_data():
+    root = etree.Element("openerp")
+    data = etree.SubElement(root, "data")
+    return root, data
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="DESCRIPTION",
+    )
+    # parser.add_argument() calls here
+    parser.add_argument('model')
+    parser.add_argument('numeric_id', type=int)
+    parser.add_argument('fields', nargs='+')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
