@@ -1,0 +1,67 @@
+#! /usr/bin/env python
+
+"""Make Odoo database dump.
+
+Author: Nick Booker
+License: GPLv2
+
+See __COPYRIGHT__ variable defined at bottom of the code.
+"""
+
+import sys
+import argparse
+import base64
+import erppeek
+from oekit.oe_client_env import OEClientEnv
+
+
+def main(options):
+    """Main program."""
+    if options.url:
+        url = options.url
+    else:
+        url = OEClientEnv().url
+    odoo = erppeek.Client(url)
+    b64data = odoo.db.dump(options.admin_password, options.dbname)
+    data = base64.b64decode(b64data)
+    options.outfile.write(data)
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Make Odoo database dump (zip file with sql dump plus filestore)",
+    )
+    # parser.add_argument() calls here
+    parser.add_argument('--admin-password', default='admin', help='Admin password, if not "admin"')
+    parser.add_argument('--outfile', '-o', required=True, type=argparse.FileType('wb'), help="File to write to (- for stdout)")
+    parser.add_argument('--url', '-u', help='URL of server (if omitted uses $OE_CLIENT_URL)')
+    parser.add_argument('dbname', help='Database name')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
+
+
+__COPYRIGHT__ = """
+
+This program is part of oekit: https://github.com/nmbooker/oekit
+
+Copyright (c) 2015 Nicholas Booker <NMBooker@gmail.com>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+"""
