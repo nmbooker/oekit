@@ -1,0 +1,35 @@
+#! /usr/bin/env python
+
+"""Linter for Odoo addons.
+"""
+
+import sys
+import argparse
+
+def main(options):
+    """Main program."""
+    meta_filename = '__openerp__.py'
+    metadata = eval(open(meta_filename).read())
+    l = LintLog()
+    if 'license' not in metadata:
+        l.log_lint(meta_filename, "No 'license' field")
+    if 'category' not in metadata:
+        l.log_lint(meta_filename, "No 'category' field")
+    return
+
+class LintLog(object):
+    def log_lint(self, filename, message):
+        sys.stdout.write("%s: %s\n" % (filename, message))
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Lint an Odoo addon",
+    )
+    # parser.add_argument() calls here
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
