@@ -5,6 +5,9 @@
 
 import sys
 import argparse
+import subprocess
+from itertools import imap
+from oekit.util import (join_iters, ext_wildcard)
 
 def main(options):
     """Main program."""
@@ -15,7 +18,34 @@ def main(options):
         l.log_lint(meta_filename, "No 'license' field")
     if 'category' not in metadata:
         l.log_lint(meta_filename, "No 'category' field")
+    wildcards = map(ext_wildcard, ['xml', 'csv', 'sql'])
+    terms = [['-iname', w] for w in wildcards]
+    query = list(join_iters('-or', terms))
+    find_out = subprocess.check_output(['find', '.'] + query + ['-print0'])
+    data_files = frozenset(p.replace('./', '', 1) for p in find_out.split('\0'))
+    data_reg_sets = imap(frozenset, imap(itemgetter_safe(metadata, lambda x: []), ['data', 'test', 'demo']))
+    referenced_data_files = union(data_reg_sets)
+    missing_data_file_registrations = data_files - referenced_data_files
+    for path in sorted(missing_data_file_registrations):
+        l.log_lint(path, 'not registered in __openerp__.py')
+    missing_data_files = referenced_data_files - data_files
+    for path in sorted(missing_data_files):
+        l.log_lint('__openerp__.py', 'references missing data file: %s' % (path,))
     return
+
+def union(sets):
+    res = set()
+    for s in sets:
+        res.update(s)
+    return res
+
+def itemgetter_safe(mapping, default_fun):
+    def _itemgetter_safe(key):
+        try:
+            return mapping[key]
+        except KeyError:
+            return default_fun(key)
+    return _itemgetter_safe
 
 class LintLog(object):
     def log_lint(self, filename, message):
