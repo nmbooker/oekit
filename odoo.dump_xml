@@ -36,30 +36,44 @@ except ImportError:
 def main(options):
     """Main program."""
     oe = OEClientEnv().get_proxy()
-    rec = oe.get_model(options.model).read(options.numeric_id, options.fields)
+    xml_generator = XMLGenerator(oe, options.model)
+    rec = xml_generator.get_record(options.numeric_id, options.fields)
     if not rec:
         logging.error('Record %d not found in model %s' % (options.numeric_id, options.model))
         sys.exit(4)
-    xml = generate_xml(rec, options.model, options.fields)
+    xml = xml_generator.generate_xml(rec, options.fields)
     sys.stdout.write(etree.tostring(xml, pretty_print=True))
 
-def generate_xml(rec, model_name, fields):
-    root, data = make_root_data()
-    record = etree.SubElement(data, "record", id="TODO", model=model_name)
-    record.extend(
-        field_element(rec, field) for field in fields
-    )
-    return root
 
-def field_element(rec, field):
-    value = rec[field]
-    if isinstance(value, bool):
-        return etree.Element("field", name=field, eval=repr(value))
-    else:
-        elem = etree.Element("field", name=field)
-        elem.text = rec[field] or ''
-        return elem
 
+class XMLGenerator(object):
+    def __init__(self, oe, model_name):
+        self._oe = oe
+        self._model_name = model_name
+        self._model = oe.get_model(model_name)
+
+    def get_record(self, numeric_id, fields):
+        return self._model.read(numeric_id, fields)
+
+    def generate_xml(self, rec, fields):
+        root, data = make_root_data()
+        record = etree.SubElement(data, "record", id="TODO", model=self._model_name)
+        record.extend(
+            self.field_element(rec, field) for field in fields
+        )
+        return root
+
+    def field_element(self, rec, field):
+        value = rec[field]
+        if isinstance(value, bool):
+            return etree.Element("field", name=field, eval=repr(value))
+        else:
+            elem = etree.Element("field", name=field)
+            elem.text = rec[field] or ''
+            return elem
+
+
+        
 def make_root_data():
     root = etree.Element("openerp")
     data = etree.SubElement(root, "data")
