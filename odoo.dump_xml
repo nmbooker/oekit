@@ -66,19 +66,17 @@ class XMLGenerator(object):
 
     def field_element(self, rec, field):
         value = rec[field]
-        return make_field_element(self._fields[field]['type'], field, value)
+        schema = self._fields[field]
+        field_type = schema['type']
+        if value == False or field_type == 'boolean':
+            return etree.Element("field", name=field, eval=repr(value))
+        elif field_type == 'many2one':
+            raise NotImplementedError('many2one')
+        else:
+            elem = etree.Element("field", name=field)
+            elem.text = value or ''
+            return elem
 
-
-def make_field_element(field_type, field, value):
-    """Return etree.Element representing this field's value.
-    """
-    if value == False or field_type == 'boolean':
-        return etree.Element("field", name=field, eval=repr(value))
-    else:
-        elem = etree.Element("field", name=field)
-        elem.text = value or ''
-        return elem
-        
 
         
 def make_root_data():
