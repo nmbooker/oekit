@@ -51,6 +51,7 @@ class XMLGenerator(object):
         self._oe = oe
         self._model_name = model_name
         self._model = oe.get_model(model_name)
+        self._fields = self._model.execute('fields_get')
 
     def get_record(self, numeric_id, fields):
         return self._model.read(numeric_id, fields)
@@ -65,13 +66,19 @@ class XMLGenerator(object):
 
     def field_element(self, rec, field):
         value = rec[field]
-        if isinstance(value, bool):
-            return etree.Element("field", name=field, eval=repr(value))
-        else:
-            elem = etree.Element("field", name=field)
-            elem.text = rec[field] or ''
-            return elem
+        return make_field_element(self._fields[field]['type'], field, value)
 
+
+def make_field_element(field_type, field, value):
+    """Return etree.Element representing this field's value.
+    """
+    if value == False or field_type == 'boolean':
+        return etree.Element("field", name=field, eval=repr(value))
+    else:
+        elem = etree.Element("field", name=field)
+        elem.text = value or ''
+        return elem
+        
 
         
 def make_root_data():
