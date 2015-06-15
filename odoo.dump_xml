@@ -71,11 +71,12 @@ class XMLGenerator(object):
         if value == False or field_type == 'boolean':
             return etree.Element("field", name=field, eval=repr(value))
         elif field_type == 'many2one':
-            raise NotImplementedError('many2one')
-        else:
+            return etree.Element("field", name=field, ref="TODO(%r)" % value)
+        elif field_type in ['char', 'text']:
             elem = etree.Element("field", name=field)
             elem.text = value or ''
             return elem
+        raise NotImplementedError('No field_element case for value %r of field %s of type %s' % (value, field, field_type,))
 
 
         
