@@ -53,8 +53,8 @@ def generate_xml(rec, model_name, fields):
 
 def field_element(rec, field):
     value = rec[field]
-    if value == False:
-        return etree.Element("field", name=field, eval="False")
+    if isinstance(value, bool):
+        return etree.Element("field", name=field, eval=repr(value))
     else:
         elem = etree.Element("field", name=field)
         elem.text = rec[field] or ''
