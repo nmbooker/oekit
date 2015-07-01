@@ -1,0 +1,35 @@
+#! /usr/bin/env python
+
+"""List the installed modules on an Odoo server.
+"""
+
+import sys
+import argparse
+
+from oekit.oe_client_env import OEClientEnv
+
+def main(options):
+    """Main program."""
+    peek = OEClientEnv().get_erppeek_client()
+
+    ir_module_module = peek.model('ir.module.module')
+    modules = ir_module_module.browse([('state', '=', 'installed')])
+    names = (module.name for module in modules)
+    sys.stdout.writelines(map(termline, names))
+    return
+
+def termline(astr):
+    return astr + "\n"
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="List the installed modules on an Odoo server",
+    )
+    # parser.add_argument() calls here
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
