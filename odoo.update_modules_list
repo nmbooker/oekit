@@ -1,0 +1,26 @@
+#! /usr/bin/env python
+
+"""Update the Odoo modules list.
+"""
+
+import sys
+import argparse
+from oekit.oe_client_env import OEClientEnv
+
+def main(options):
+    """Main program."""
+    odoo = OEClientEnv().get_erppeek_client()
+    odoo.model('base.module.update').create({}).update_module()
+    # TODO: Perhaps print a summary of how many modules were added and updated
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Update the Odoo modules list",
+    )
+    options = parser.parse_args()
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
