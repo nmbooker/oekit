@@ -1,0 +1,42 @@
+#! /usr/bin/env python2
+
+"""Check the VAT number using Odoo.
+"""
+
+import sys
+import argparse
+from oekit.oe_client_env import OEClientEnv
+
+def main(options):
+    """Main program."""
+    oe = OEClientEnv().get_proxy()
+    ResPartner = oe.get_model('res.partner')
+    country_code, vat_number = split_vat(options.vatno)
+    ok = ResPartner.execute('simple_vat_check', country_code, vat_number)
+    if ok:
+        sys.stdout.write("GOOD\n")
+        sys.exit(0)
+    else:
+        sys.stdout.write("BAD\n")
+        sys.exit(3)
+    return
+
+# split_vat (C) 2012-2014 OpenERP SA (<http://openerp.com>)
+# Copied from odoo/addons/base_vat/base_vat.py under terms of the GNU GPLv3
+# and converted to simple function
+def split_vat(vat):
+    vat_country, vat_number = vat[:2].lower(), vat[2:].replace(' ', '')
+    return vat_country, vat_number
+
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Validate vatno.  Exits with 0 on success, or 3 if VAT number was invalid.",
+    )
+    parser.add_argument('vatno', help='The VAT number you want to check')
+    options = parser.parse_args()
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
