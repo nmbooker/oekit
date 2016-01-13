@@ -144,3 +144,19 @@ Here's the number of models currently installed in my OpenERP test database:
 
 $ ./oe_list_models -m | wc -l
 364
+
+odoo.backup_db
+..............
+
+Example: 
+
+$ odoo.backupdb --admin-password adminpass -u http://odooserver:8069 -o mydb.zip  mydb
+
+With any luck the above should log into the database manager for the Odoo running on
+odooserver port 8069 with password adminpass (note this is the password for the database
+manager, and not the password for the admin user of the database itself), and download
+a backup of the mydb database (including database and filestore) and putting it in the
+zip file mydb.zip in your current directory.
+
+Without -o it will output the zip file on STDOUT, and without -u it will try to use the
+OE_CLIENT_URL environment variable.
