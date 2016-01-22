@@ -1,0 +1,36 @@
+#! /usr/bin/env python2
+
+"""Get the XML of a report on Odoo
+"""
+
+import sys
+import argparse
+from oekit.oe_client_env import OEClientEnv
+
+def main(options):
+    """Main program."""
+    odoo = OEClientEnv().get_erppeek_client()
+    report = odoo.model('ir.ui.view').get(options.xmlid)
+    with open("%s.xml" % (options.xmlid)) as xmlfile:
+        newarch = xmlfile.read()
+        if not newarch.strip():
+            sys.stderr.write("Error: input contained no data, this would empty the report")
+            sys.exit(4)
+        if not report:
+            sys.stderr.write("Error: report not found: %s\n" % (options.xmlid))
+            sys.exit(3)
+        report.write({'arch': newarch})
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="read xmlid.xml and upload to arch of report xmlid",
+    )
+    parser.add_argument('--xmlid', required=True, help='the xmlid of the report')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
