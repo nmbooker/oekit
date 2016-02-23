@@ -2,7 +2,7 @@
 """A simple kit for client-side OpenERP programming and testing.
 
 Author: Nick Booker
-License: GPLv2
+License: GPLv3
 
 Here are some of the modules:
     oeproxy: simplifies talking to an OpenERP server via XML-RPC a bit
