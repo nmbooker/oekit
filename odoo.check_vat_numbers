@@ -1,6 +1,6 @@
 #! /usr/bin/env python2
 
-"""Check the VAT number using Odoo.
+"""Check the VAT numbers using Odoo.
 """
 
 import sys
@@ -10,12 +10,14 @@ from oekit.vatcheck import VATNumberChecker
 def main(options):
     """Main program."""
     vat_no_checker = VATNumberChecker()
-    if vat_no_checker.ok(options.vatno):
-        sys.stdout.write("GOOD\n")
-        sys.exit(0)
-    else:
-        sys.stdout.write("BAD\n")
-        sys.exit(3)
+    fmt = "{}: {}: {}\n"
+    for idx, line in enumerate(sys.stdin):
+        vatno = line.rstrip()
+        if not vatno:
+            continue
+        lineno = options.number_from + idx
+        if not vat_no_checker.ok(vatno):
+            sys.stdout.write(fmt.format(lineno, vatno, 'BAD'))
     return
 
 
@@ -25,7 +27,7 @@ def get_options():
     parser = argparse.ArgumentParser(
         description="Validate vatno.  Exits with 0 on success, or 3 if VAT number was invalid.",
     )
-    parser.add_argument('vatno', help='The VAT number you want to check')
+    parser.add_argument('--number-from', '-b', type=int, default=1, help='Number lines from given number, default is 1')
     options = parser.parse_args()
     return options
 
