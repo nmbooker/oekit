@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name = 'oekit',
-    version = '0.16',
+    version = '0.17',
     packages = setuptools.find_packages(),
     install_requires = ['erppeek>=1.6'],
     scripts = [
@@ -22,5 +22,7 @@ setuptools.setup(
         'odoo.backupdb',
         'odoo.putrep',
         'odoo.getrep',
+        'odoo.check_vat_number',
+        'odoo.check_vat_numbers',
     ],
 )
