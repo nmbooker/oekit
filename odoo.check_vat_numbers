@@ -16,6 +16,9 @@ def main(options):
         if not vatno:
             continue
         lineno = options.number_from + idx
+        if not vatno[:2].isalpha():
+            sys.stdout.write(fmt.format(lineno, 'BAD', vatno))
+            continue
         if not vat_no_checker.ok(vatno):
             sys.stdout.write(fmt.format(lineno, 'BAD', vatno))
     return
