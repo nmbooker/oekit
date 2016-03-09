@@ -1,6 +1,6 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
 
-"""List the installed modules on an Odoo server.
+"""Manage Odoo system parameters.
 """
 
 import sys
