@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name = 'oekit',
-    version = '0.18',
+    version = '0.19',
     packages = setuptools.find_packages(),
     install_requires = ['erppeek>=1.6'],
     scripts = [
@@ -25,5 +25,6 @@ setuptools.setup(
         'odoo.check_vat_number',
         'odoo.check_vat_numbers',
         'odoo.sysparams',
+        'odoo.gpasswd',
     ],
 )

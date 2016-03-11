@@ -1,0 +1,62 @@
+#! /usr/bin/env python2
+
+"""Manage Odoo system parameters.
+"""
+
+import sys
+import argparse
+
+from oekit.oe_client_env import OEClientEnv
+
+def main(options):
+    """Main program."""
+    peek = OEClientEnv().get_erppeek_client()
+
+    if options.add:
+        username = options.add
+        group = get_group(peek, options.group)
+        user = peek.model('res.users').get([('login', '=', username)])
+        if not user:
+            sys.stderr.write("Error: user not found: {}\n".format(username))
+            sys.exit(4)
+        if group not in user.groups_id:
+            user.write({
+                'groups_id': [(4, group.id, False)],
+            })
+    else:
+        sys.stderr.write("Error: no action chosen\n")
+        sys.exit(2)
+
+def get_group(peek, grouppath):
+    (catname, groupname) = grouppath.split('/')
+    parts = grouppath.split('/')
+    if len(parts) == 2:
+        (catname, groupname) = parts
+        category = peek.model('ir.module.category').get([('name', '=', catname)])
+        if not category:
+            sys.stderr.write("Error: category not found: {}\n".format(catname))
+            sys.exit(3)
+        category_id = category.id
+    else:
+        (groupname) = parts
+        category_id = False
+
+    group = peek.model('res.groups').get([('name', '=', groupname), ('category_id', '=', category_id)])
+    if not group:
+        sys.stderr.write("Error: group not found: {}\n".format(grouppath))
+        sys.exit(3)
+    return group
+
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Manage Odoo system parameters",
+    )
+    parser.add_argument('group', help="the group to work on")
+    parser.add_argument('-a', '--add', metavar='user', help='add the user to the named group')
+    options = parser.parse_args()
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
