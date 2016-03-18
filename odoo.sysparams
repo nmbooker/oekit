@@ -19,7 +19,7 @@ def set_param(options):
 
     param = ConfigParameter.get([('key', '=', options.key)])
     if param:
-        param.update(dict(value=options.value))
+        param.write(dict(value=options.value))
     else:
         ConfigParameter.create(dict(key=options.key, value=options.value))
 
