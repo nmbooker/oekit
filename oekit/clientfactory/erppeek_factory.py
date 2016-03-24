@@ -9,6 +9,7 @@ Example:
 """
 
 import ..oeproxy
+import erppeek
 
 class ERPPeekBaseFactory(object):
     def __init__(self, verbose=False):
@@ -19,7 +20,6 @@ class DatabaseManagerFactory(ERPPeekBaseFactory):
     database management.
     """
     def connect(self, config):
-        import erppeek
         return erppeek.Client(
             server=config.url,
             verbose=self.verbose,
@@ -34,7 +34,6 @@ class ClientFactory(ERPPeekBaseFactory):
         Note you must have the erppeek package in the python path
         for this to work, or you will get an ImportError on call.
         """
-        import erppeek
         return erppeek.Client(
             server=config.url,
             db=config.dbname,
