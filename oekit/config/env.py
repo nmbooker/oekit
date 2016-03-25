@@ -9,7 +9,6 @@ For production, you might want to take info at the command line and
 prompt for a password (without echoing) instead.
 """
 
-import oeproxy
 import os
 
 class EnvConfig(object):
