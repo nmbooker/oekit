@@ -10,8 +10,9 @@ prompt for a password (without echoing) instead.
 """
 
 import os
+from .base import BaseConfig
 
-class EnvConfig(object):
+class EnvConfig(BaseConfig):
     """Get client login info from the environment.
 
     By default, the information will be retrieved from the environment
@@ -31,14 +32,12 @@ class EnvConfig(object):
         """
         self.prefix = prefix
 
-    def get(self, name):
-        """Return the password etc set in the environment.
-        """
-        return self._environ(name.upper())
+    def _get(self, key):
+        return self._environ(key.upper())
 
     def _environ(self, suffix):
         """Return value of environment variable with given suffix."""
-        return os.environ.get(self._var(suffix))
+        return os.getenv(self._var(suffix))
 
     def _var(self, suffix):
         """Return the full environment variable name."""

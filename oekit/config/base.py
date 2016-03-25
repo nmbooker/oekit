@@ -2,13 +2,22 @@
 """oekit config - base stuff
 """
 
-class OEClientException(Exception):
-    pass
+class BaseConfig(object):
+    """Base config.
 
-class OEClientConfigError(OEClientException):
-    """Raised when can't find a particular piece of config
+    Implement self._get(key), returning None if unset.
     """
-    pass
+    def __getitem__(self, key):
+        val = self._get(key)
+        if val is None:
+            raise KeyError(key)
+        return val
+
+    def get(self, key, default=None):
+        val = self._get(key)
+        if val is None:
+            return default
+        return val
 
 __COPYRIGHT__ = """
 

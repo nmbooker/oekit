@@ -11,7 +11,9 @@ Example:
 
 """
 
-class AttrsConfig(object):
+from .base import BaseConfig
+
+class AttrsConfig(BaseConfig):
     """Adapt an object that may have one or more of 'url', 'dbname',
     'password' and 'user' attributes properties.
 
@@ -21,10 +23,8 @@ class AttrsConfig(object):
     def __init__(self, obj):
         self._obj = obj
 
-    def get(self, name):
-        if hasattr(self._obj, name):
-            return getattr(self._obj, name)
-        return None
+    def _get(self, key):
+        return getattr(self._obj, key, None)
 
 __COPYRIGHT__ = """
 
