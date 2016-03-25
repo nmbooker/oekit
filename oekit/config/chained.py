@@ -4,15 +4,19 @@
 
 from .base import BaseConfig
 
-class OEClientChain(BaseConfig):
+class OEConfigChain(BaseConfig):
     """Get client login info.
+    
+    This implementation checks a series of configs in order,
+    and the first config to return a value other than None
+    from its get() method wins.
     """
-    def __init__(self, clients):
-        self.clients = clients
+    def __init__(self, configs):
+        self.configs = configs
 
     def _get(self, key):
-        for client in self.clients:
-            value = client._get(key)
+        for config in self.configs:
+            value = config.get(key, None)
             if value is not None:
                 return value
         return None
