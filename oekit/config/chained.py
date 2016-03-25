@@ -2,15 +2,17 @@
 """OpenERP client using a chain of fallbacks.
 """
 
-class OEClientChain(object):
+from .base import BaseConfig
+
+class OEClientChain(BaseConfig):
     """Get client login info.
     """
     def __init__(self, clients):
         self.clients = clients
 
-    def get(self, key):
+    def _get(self, key):
         for client in clients:
-            value = client.get(key)
+            value = client._get(key)
             if value is not None:
                 return value
         return None
