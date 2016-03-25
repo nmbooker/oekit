@@ -11,7 +11,7 @@ class OEClientChain(BaseConfig):
         self.clients = clients
 
     def _get(self, key):
-        for client in clients:
+        for client in self.clients:
             value = client._get(key)
             if value is not None:
                 return value
