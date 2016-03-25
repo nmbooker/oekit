@@ -16,9 +16,6 @@ from .base import BaseConfig
 class AttrsConfig(BaseConfig):
     """Adapt an object that may have one or more of 'url', 'dbname',
     'password' and 'user' attributes properties.
-
-    Essentially converts AttributeError on these attrs to a return None,
-    and hides all other methods on the object to avoid accidental damage.
     """
     def __init__(self, obj):
         self._obj = obj
