@@ -2,47 +2,18 @@
 """OpenERP client using a chain of fallbacks.
 """
 
-from .base import OEClientConfigError
-
 class OEClientChain(object):
     """Get client login info.
     """
     def __init__(self, clients):
         self.clients = clients
 
-    def _get_first_attr(self, attrname):
+    def get(self, key):
         for client in clients:
-            try:
-                value = getattr(client, attrname)
-            except OEClientConfigError:
-                value = None
+            value = client.get(key)
             if value is not None:
                 return value
-            raise OEClientConfigError('url')
-
-    @property
-    def url(self):
-        """The URL"""
-        return self._get_first_attr('url')
-
-    @property
-    def dbname(self):
-        """The database name
-        """
-        return self._get_first_attr('dbname')
-
-    @property
-    def user(self):
-        """The username
-        """
-        return self._get_first_attr('user')
-
-    @property
-    def password(self):
-        """The password
-        """
-        return self._get_first_attr('password')
-
+        return None
 
 __COPYRIGHT__ = """
 

@@ -17,7 +17,7 @@ def test_argparse():
         '--dbname', dbname,
     ])
     conf = ArgsConfig(options)
-    assert conf.url == url
-    assert conf.user == user
-    assert conf.password == password
-    assert conf.dbname == dbname
+    assert conf.get('url') == url
+    assert conf.get('user') == user
+    assert conf.get('password') == password
+    assert conf.get('dbname') == dbname

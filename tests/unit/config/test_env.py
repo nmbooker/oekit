@@ -9,7 +9,7 @@ def test_env():
     os.environ['TEST_PASSWORD'] = 'password'
     os.environ['TEST_DBNAME'] = 'foodb'
     env = EnvConfig('TEST_')
-    assert env.url == 'http://example.com:8069'
-    assert env.user == 'admin'
-    assert env.password == 'password'
-    assert env.dbname == 'foodb'
+    assert env.get('url') == 'http://example.com:8069'
+    assert env.get('user') == 'admin'
+    assert env.get('password') == 'password'
+    assert env.get('dbname') == 'foodb'

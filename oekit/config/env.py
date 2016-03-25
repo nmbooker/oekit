@@ -31,27 +31,10 @@ class EnvConfig(object):
         """
         self.prefix = prefix
 
-    @property
-    def url(self):
-        """The URL set in the environment variable prefixURL"""
-        return self._environ('URL')
-
-    @property
-    def dbname(self):
-        """The database name set in the environment variable prefixDBNAME
+    def get(self, name):
+        """Return the password etc set in the environment.
         """
-        return self._environ('DBNAME')
-
-    @property
-    def user(self):
-        """The username set in the environment variable prefixUSER"""
-        return self._environ('USER')
-
-    @property
-    def password(self):
-        """The password set in the environment variable prefixPASSWORD
-        """
-        return self._environ('PASSWORD')
+        return self._environ(name.upper())
 
     def _environ(self, suffix):
         """Return value of environment variable with given suffix."""

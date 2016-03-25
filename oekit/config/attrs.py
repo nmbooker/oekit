@@ -21,23 +21,7 @@ class AttrsConfig(object):
     def __init__(self, obj):
         self._obj = obj
 
-    @property
-    def url(self):
-        return self._getopt('url')
-
-    @property
-    def dbname(self):
-        return self._getopt('dbname')
-
-    @property
-    def password(self):
-        return self._getopt('password')
-
-    @property
-    def user(self):
-        return self._getopt('user')
-
-    def _getopt(self, name):
+    def get(self, name):
         if hasattr(self._obj, name):
             return getattr(self._obj, name)
         return None
