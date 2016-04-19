@@ -26,5 +26,6 @@ setuptools.setup(
         'odoo.check_vat_numbers',
         'odoo.sysparams',
         'odoo.gpasswd',
+        'odoo.lsgrp',
     ],
 )
