@@ -1,6 +1,6 @@
 #! /usr/bin/env python2
 
-"""Manage Odoo system parameters.
+"""List groups.
 """
 
 import sys
