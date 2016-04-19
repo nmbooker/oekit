@@ -1,0 +1,38 @@
+#! /usr/bin/env python2
+
+"""Manage Odoo system parameters.
+"""
+
+import sys
+import argparse
+
+from csvkit.unicsv import UnicodeCSVWriter
+
+from oekit.oe_client_env import OEClientEnv
+from oekit.peekutil.xmlid import xmlid_of
+
+def main(options):
+    """Main program."""
+    peek = OEClientEnv().get_erppeek_client()
+
+    groups = peek.model('res.groups').browse([])
+    csv = UnicodeCSVWriter(sys.stdout)
+    csv.writerow(['id', 'category', 'name', 'xmlid'])
+    csv.writerows(makerow(peek, g) for g in groups)
+
+def makerow(peek, group):
+    catobj = group.category_id
+    catname = catobj.name if catobj else None
+    return [group.id, catname, group.name, xmlid_of(peek, 'res.groups', group.id)]
+
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="List Odoo groups",
+    )
+    options = parser.parse_args()
+    return options
+
+if __name__ == "__main__":
+    main(get_options())

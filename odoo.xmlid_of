@@ -7,6 +7,7 @@ import sys
 import argparse
 
 from oekit.oe_client_env import OEClientEnv
+from oekit.peekutil.xmlid import xmlid_of
 
 import logging
 
@@ -16,18 +17,12 @@ def main(options):
     """Main program."""
     logging.basicConfig(level=logging.INFO)
     odoo = OEClientEnv().get_erppeek_client()
-    ir_model_data = odoo.model('ir.model.data')
-    model_name = options.model
-    res_id = options.numeric_id
-    xmlid = ir_model_data.browse([
-        ('model', '=', model_name),
-        ('res_id', '=', res_id),
-    ])
+    xmlid = xmlid_of(odoo, options.model, options.numeric_id)
     if xmlid:
-        sys.stdout.write("%s\n" % (xmlid[0].complete_name,))
+        sys.stdout.write("%s\n" % (xmlid,))
         sys.exit(0)
     else:
-        sys.stderr.write( "No XMLID found for %s,%d\n" % (model_name, res_id,) )
+        sys.stderr.write( "No XMLID found for %s,%d\n" % (options.model, options.numeric_id,) )
         sys.exit(4)
     return
 
