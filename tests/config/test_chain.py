@@ -29,3 +29,7 @@ def test_local_only():
 
 def test_local_trumps_global():
     assert chain.get('dbname') == 'test'
+
+
+def test_no_match():
+    assert chain.get('foo') is None
