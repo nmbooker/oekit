@@ -6,7 +6,7 @@ setuptools.setup(
     name = 'oekit',
     version = '0.21',
     packages = setuptools.find_packages(exclude=['tests', 'tests.*'],),
-    install_requires = ['erppeek>=1.6'],
+    install_requires = ['erppeek>=1.6', 'funbox'],
     scripts = [
         'oe_dump_csv',
         'oe_describe',
