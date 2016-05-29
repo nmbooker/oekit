@@ -8,7 +8,6 @@ Example:
     oe = factory.connect(config)
 """
 
-import ..oeproxy
 import erppeek
 
 class ERPPeekBaseFactory(object):
@@ -21,7 +20,7 @@ class DatabaseManagerFactory(ERPPeekBaseFactory):
     """
     def connect(self, config):
         return erppeek.Client(
-            server=config.url,
+            server=config['url'],
             verbose=self.verbose,
         )
 
@@ -35,10 +34,10 @@ class ClientFactory(ERPPeekBaseFactory):
         for this to work, or you will get an ImportError on call.
         """
         return erppeek.Client(
-            server=config.url,
-            db=config.dbname,
-            user=config.user,
-            password=config.password,
+            server=config['url'],
+            db=config['dbname'],
+            user=config['user'],
+            password=config['password'],
             verbose=self.verbose
         )
 
