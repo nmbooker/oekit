@@ -5,15 +5,14 @@
 
 import sys
 import argparse
-from oekit import oe_client_env
-import erppeek
-from funbox.once import Once
+from oekit.config.argparse import ArgsConfig, add_url_arg
+from oekit.config import env, chained
+from oekit.clientfactory import peek
 
 def main(options):
     """Main program."""
-    env = Once(oe_client_env.OEClientEnv)
-    url = options.url or env().url
-    client = erppeek.Client(server=url)
+    config = chained.OEConfigChain([ArgsConfig(options), env.EnvConfig()])
+    client = peek.DatabaseManagerFactory().connect(config)
     for db in client.db.list():
         print db
     return
@@ -23,9 +22,8 @@ def get_options():
     parser = argparse.ArgumentParser(
         description="list databases on the given Odoo instance",
     )
-    parser.add_argument('-u', '--url', help='Override URL')
+    add_url_arg(parser)
     options = parser.parse_args()
-    # extra processing of options here
     return options
 
 if __name__ == "__main__":
