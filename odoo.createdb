@@ -30,7 +30,7 @@ def get_options():
     )
     # parser.add_argument() calls here
     parser.add_argument('dbname', help='the name of the database to create')
-    parser.add_argument('-u', '--url', help='Override URL')
+    add_url_arg(parser)
     parser.add_argument('-P', '--master-password', default='admin', help='the master password if not admin')
     parser.add_argument('-p', '--user-password', default='admin', help='the password to create the super user with, default: admin')
     parser.add_argument('-d', '--demo-data', action='store_true', help='install the demo data')
