@@ -17,8 +17,8 @@ class OEProxyClientFactory(object):
         """Return a new OEProxy logged into the database configured in the
         environment.
         """
-        oe = oeproxy.OEProxy(config.url)
-        oe.login(config.dbname, config.user, config.password)
+        oe = oeproxy.OEProxy(config['url'])
+        oe.login(config['dbname'], config['user'], config['password'])
         return oe
 
 __COPYRIGHT__ = """
