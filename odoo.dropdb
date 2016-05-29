@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-"""Make an Odoo database.
+"""Drop an Odoo database.
 """
 
 import sys
