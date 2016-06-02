@@ -3,7 +3,7 @@
 """Make Odoo database dump.
 
 Author: Nick Booker
-License: GPLv2
+License: GPLv3
 
 See __COPYRIGHT__ variable defined at bottom of the code.
 """
