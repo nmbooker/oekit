@@ -7,6 +7,7 @@ See __COPYRIGHT__ variable defined at bottom of the code.
 """
 
 import xmlrpclib
+from operator import itemgetter
 
 class NotLoggedInError(Exception):
     pass
@@ -74,6 +75,7 @@ class OEProxy(object):
         return (model, res_id)
 
 
+
 class OEModelProxy(object):
     """Proxies an OpenERP model.
 
@@ -101,6 +103,7 @@ class OEModelProxy(object):
         """
         return self.execute('read', ids, fields)
 
+
     def make_lookup_mapping(self, key_field, ids=None):
         """Return a dictionary mapping the given key field to an id.
 
@@ -123,6 +126,11 @@ class OEModelProxy(object):
             ids = self.search([])
         records = self.read(ids, ['id', key_field])
         return {r[key_field]: r['id'] for r in records}
+
+    def xmlids_of(self, res_ids):
+        ids = self._oe.execute('ir.model.data', 'search', [('model', '=', self._model_name), ('res_id', 'in', res_ids)])
+        recs = self._oe.execute('ir.model.data', 'read', ids, ['complete_name'])
+        return map(itemgetter('complete_name'), recs)
 
 
 __COPYRIGHT__ = """

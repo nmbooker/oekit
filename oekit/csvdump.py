@@ -74,7 +74,7 @@ def get_rows(oe_proxy, model, ids, fields):
     rows = []
     rows.append(fields)
     for record in records:
-        row = [_fixup_value(schema, field, record[field]) for field in fields]
+        row = [_resolve_field(oe_proxy, model, schema, field, record) for field in fields]
         rows.append(row)
     return rows
 
@@ -93,6 +93,29 @@ def _fixid(schema, field, obj):
         return obj[0] if obj else None
     else:
         return obj
+
+def _resolve_field(oe, model, schema, field, record):
+    fname = _base_field_name(field)
+    obj = record[fname]
+    val = _fixup_value(schema, fname, obj)
+    if field.endswith(':id'):
+        ftype = schema[fname]['type']
+        if field == 'id':
+            xmlid_model = model
+        else:
+            xmlid_model = oe.get_model(schema[fname].get('relation'))
+        if fname == 'id' or ftype == 'many2one':
+            ids = [val]
+        elif ftype.endswith('2many'):
+            ids = val.split(';')
+        else:
+            raise TypeError('cannot use :id with field %s of type %s' % (fname, ftype))
+        return ';'.join(xmlid_model.xmlids_of(map(int, ids)))
+    return val
+
+def _base_field_name(field):
+    parts = field.split(':')
+    return parts[0]
 
 def _fixup_value(schema, field, obj):
     return _fixid(schema, field, _cvtunicode(obj))
