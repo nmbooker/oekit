@@ -1,0 +1,66 @@
+#! /usr/bin/env python2
+
+"""Modify an Odoo user
+"""
+
+import sys
+import argparse
+
+from oekit.oe_client_env import OEClientEnv
+
+def main(options):
+    """Main program."""
+    peek = OEClientEnv().get_erppeek_client()
+
+    login = options.login
+    user = peek.model('res.users').get([('login', '=', login)])
+    if not user:
+        sys.stderr.write("Error: user not found: {}\n".format(login))
+        sys.exit(4)
+    changes = {}
+    if options.new_login:
+        changes['login'] = options.new_login
+
+    if options.email:
+        changes['email'] = options.email
+
+    if changes:
+        user.write(changes)
+    else:
+        sys.stderr.write("Error: no action chosen\n")
+        sys.exit(2)
+
+def get_group(peek, grouppath):
+    (catname, groupname) = grouppath.split('/')
+    parts = grouppath.split('/')
+    if len(parts) == 2:
+        (catname, groupname) = parts
+        category = peek.model('ir.module.category').get([('name', '=', catname)])
+        if not category:
+            sys.stderr.write("Error: category not found: {}\n".format(catname))
+            sys.exit(3)
+        category_id = category.id
+    else:
+        (groupname) = parts
+        category_id = False
+
+    group = peek.model('res.groups').get([('name', '=', groupname), ('category_id', '=', category_id)])
+    if not group:
+        sys.stderr.write("Error: group not found: {}\n".format(grouppath))
+        sys.exit(3)
+    return group
+
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="Modify an Odoo user",
+    )
+    parser.add_argument('login', metavar="LOGIN")
+    parser.add_argument('-E', '--email', metavar='EMAIL_ADDRESS', help='set user email address to EMAIL_ADDRESS')
+    parser.add_argument('-l', '--login', dest='new_login', metavar='NEW_LOGIN', help='rename user LOGIN to NEW_LOGIN')
+    options = parser.parse_args()
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
