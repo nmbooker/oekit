@@ -21,7 +21,7 @@ def main(options):
     if options.new_login:
         changes['login'] = options.new_login
 
-    if options.email:
+    if options.email is not None:
         changes['email'] = options.email
 
     if changes:
