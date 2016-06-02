@@ -30,27 +30,6 @@ def main(options):
         sys.stderr.write("Error: no action chosen\n")
         sys.exit(2)
 
-def get_group(peek, grouppath):
-    (catname, groupname) = grouppath.split('/')
-    parts = grouppath.split('/')
-    if len(parts) == 2:
-        (catname, groupname) = parts
-        category = peek.model('ir.module.category').get([('name', '=', catname)])
-        if not category:
-            sys.stderr.write("Error: category not found: {}\n".format(catname))
-            sys.exit(3)
-        category_id = category.id
-    else:
-        (groupname) = parts
-        category_id = False
-
-    group = peek.model('res.groups').get([('name', '=', groupname), ('category_id', '=', category_id)])
-    if not group:
-        sys.stderr.write("Error: group not found: {}\n".format(grouppath))
-        sys.exit(3)
-    return group
-
-
 def get_options():
     """Get options for the script."""
     parser = argparse.ArgumentParser(
