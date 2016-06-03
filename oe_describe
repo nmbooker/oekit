@@ -27,7 +27,7 @@ def field_rows(fields):
     return starmap(format_field_row, sorted(fields.items(), key=first))
 
 def format_field_row(name, field_dict):
-    return [name, field_dict['type'], field_dict.get('relation', ''), field_dict['string'], field_dict['required']]
+    return [name, field_dict['type'], field_dict.get('relation', ''), field_dict['string'], field_dict.get('required')]
 
 # for sorting
 def first(a_tuple):
@@ -56,7 +56,7 @@ __COPYRIGHT__ = """
 
 This program is part of oekit: https://github.com/nmbooker/oekit
 
-Copyright (c) 2015 Nicholas Booker <NMBooker@gmail.com>
+Copyright (c) 2016 Nicholas Booker <NMBooker@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
