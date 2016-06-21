@@ -1,0 +1,40 @@
+#! /usr/bin/env python2
+
+"""Print the differences between a pair of records.
+"""
+
+import sys
+import argparse
+from oekit.oe_client_env import OEClientEnv
+import csv
+
+def main(options):
+    """Main program."""
+    oe = OEClientEnv().get_proxy()
+    model = oe.get_model(options.model)
+    fields = model.execute('fields_get')
+    field_names = sorted(fields.keys())
+    left = model.read(options.left_id, field_names)
+    right = model.read(options.right_id, field_names)
+    writer = csv.writer(sys.stdout)
+    writer.writerow(['field', 'left', 'right'])
+    for field in field_names:
+        if left[field] != right[field]:
+            writer.writerow([field, left[field], right[field]])
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="print the differences between a pair of records",
+    )
+    # parser.add_argument() calls here
+    parser.add_argument('model')
+    parser.add_argument('left_id', type=int)
+    parser.add_argument('right_id', type=int)
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
