@@ -6,7 +6,7 @@
 import sys
 import argparse
 from oekit.oe_client_env import OEClientEnv
-import csv
+from csvkit.unicsv import UnicodeCSVWriter
 
 def main(options):
     """Main program."""
@@ -16,7 +16,7 @@ def main(options):
     field_names = sorted(fields.keys())
     left = model.read(options.left_id, field_names)
     right = model.read(options.right_id, field_names)
-    writer = csv.writer(sys.stdout)
+    writer = UnicodeCSVWriter(sys.stdout)
     if options.header:
         writer.writerow(['field', 'left', 'right'])
     for field in field_names:
