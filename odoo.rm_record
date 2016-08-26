@@ -1,0 +1,31 @@
+#! /usr/bin/env python2
+
+"""DESCRIPTION
+"""
+
+import sys
+import argparse
+
+from oekit.oe_client_env import OEClientEnv
+
+def main(options):
+    """Main program."""
+    oe = OEClientEnv().get_erppeek_client()
+
+    oe.model(options.model).get(options.xmlid).unlink()
+    return
+
+def get_options():
+    """Get options for the script."""
+    parser = argparse.ArgumentParser(
+        description="remove a record with given model and xmlid.  INTERFACE IS EXPERIMENTAL",
+    )
+    # parser.add_argument() calls here
+    parser.add_argument('model', help='model name')
+    parser.add_argument('xmlid', help='XMLID of record')
+    options = parser.parse_args()
+    # extra processing of options here
+    return options
+
+if __name__ == "__main__":
+    main(get_options())
