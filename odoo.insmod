@@ -8,16 +8,26 @@ import argparse
 from oekit import oe_client_env
 from os.path import (abspath, basename)
 
-def main(options):
-    """Main program."""
-    env = oe_client_env.OEClientEnv()
-    client = env.get_erppeek_client()
-    modules = map(resolve_module, options.modules)
-    if options.upgrade:
-        client.upgrade(*modules)
-    else:
-        client.install(*modules)
-    return
+class Insmod(object):
+
+    def __init__(self, options):
+        self.options = options
+        
+    def main(self):
+        """Main program."""
+        env = oe_client_env.OEClientEnv()
+        client = env.get_erppeek_client()
+        modules = map(resolve_module, self.options.modules)
+        if self.options.upgrade:
+            client.upgrade(*modules)
+        else:
+            client.install(*modules)
+            
+        return
+
+    def get_modules_to_work_with(self):
+        modules = self.options.modules[:]
+        
 
 def resolve_module(module):
     if set('./').intersection(module):
@@ -32,6 +42,8 @@ def get_options():
     )
     parser.add_argument('modules', nargs='+', help='name the modules to install')
     parser.add_argument('-u', '--upgrade', action='store_true', help='update not install the listed modules')
+    parser.add_argument('-d', '--immediate-dependencies', action='store_true',
+                        help='upgrade immediate dependencies too')
     options = parser.parse_args()
     return options
 
