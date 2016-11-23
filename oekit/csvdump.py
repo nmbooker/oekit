@@ -85,14 +85,32 @@ def _cvtunicode(obj):
         return obj
 
 def _fixid(schema, field, obj):
+    resolver = _value_resolver(schema, field, obj)
+    return resolver.resolve(obj)
+
+def _value_interpreter(schema, field, obj):
     if field == 'id':
-        return obj      # doesn't sit in schema
+        # doesn't sit in schema
+        return SimpleValueInterpreter()
     elif schema[field]['type'] == 'one2many':
-        return ';'.join(map(unicode, sorted(obj)))
+        return One2manyValueInterpreter()
     elif schema[field]['type'] == 'many2one':
-        return obj[0] if obj else None
+        return Many2oneValueInterpreter()
     else:
-        return obj
+        return SimpleValueInterpreter()
+
+class SimpleValueInterpreter(object):
+    def resolve(self, value):
+        return value
+
+class One2manyValueInterpreter(object):
+    def resolve(self, value):
+        return ';'.join(map(unicode, sorted(value)))
+
+class Many2oneValueInterpreter(object):
+    def resolve(self, value):
+        return value[0] if value else None
+
 
 def _fixup_value(schema, field, obj):
     return _fixid(schema, field, _cvtunicode(obj))
