@@ -8,25 +8,9 @@ import argparse
 from oekit.oe_client_env import OEClientEnv
 from csvkit.unicsv import UnicodeCSVWriter
 
-class OdooRecordDiff(object):
+class OdooDiffDB(object):
     def __init__(self, options):
         self.options = options
-    
-    def main(self):
-        """Main program."""
-        left_model = self.get_left_model()
-        right_model = self.get_right_model()
-        fields = left_model.execute('fields_get')
-        field_names = sorted(fields.keys())
-        left = left_model.read(self.options.left_id, field_names)
-        right = right_model.read(self.options.right_id, field_names)
-        writer = UnicodeCSVWriter(sys.stdout)
-        if self.options.header:
-            writer.writerow(['field', 'left', 'right'])
-        for field in field_names:
-            if left[field] != right[field]:
-                writer.writerow([field, left[field], right[field]])
-        return
 
     def get_left_model(self):
         return self._get_model(self.options.left_db)
@@ -40,7 +24,43 @@ class OdooRecordDiff(object):
         if dbarg:
            kwargs['dbname'] = dbarg
         return env.get_proxy(**kwargs).get_model(self.options.model)
-            
+
+class OdooRecordDiff(object):
+    def __init__(self, options):
+        self.options = options
+        self.diff_db = OdooDiffDB(options)
+    
+    def main(self):
+        """Main program."""
+        left_model = self.diff_db.get_left_model()
+        right_model = self.diff_db.get_right_model()
+        fields = left_model.execute('fields_get')
+        field_names = sorted(fields.keys())
+        left = left_model.read(self.options.left_id, field_names)
+        if not left:
+            sys.stderr.write("Left record {} does not exist\n".format(self.options.left_id))
+        right = right_model.read(self.options.right_id, field_names)
+        if not right:
+            sys.stderr.write("Right record {} does not exist\n".format(self.options.right_id))
+        if not (left or right):
+            return
+        writer = UnicodeCSVWriter(sys.stdout)
+        if self.options.header:
+            if not right:
+                writer.writerow(['field', 'left'])
+            elif not left:
+                writer.writerow(['field', 'right'])
+            else:
+                writer.writerow(['field', 'left', 'right'])
+        for field in field_names:
+            if not right:
+                writer.writerow([field, left[field]])
+            elif not left:
+                writer.writerow([field, right[field]])
+            elif left[field] != right[field]:
+                writer.writerow([field, left[field], right[field]])
+        return
+
 
 def get_options():
     """Get options for the script."""
