@@ -8,21 +8,39 @@ import argparse
 from oekit.oe_client_env import OEClientEnv
 from csvkit.unicsv import UnicodeCSVWriter
 
-def main(options):
-    """Main program."""
-    oe = OEClientEnv().get_proxy()
-    model = oe.get_model(options.model)
-    fields = model.execute('fields_get')
-    field_names = sorted(fields.keys())
-    left = model.read(options.left_id, field_names)
-    right = model.read(options.right_id, field_names)
-    writer = UnicodeCSVWriter(sys.stdout)
-    if options.header:
-        writer.writerow(['field', 'left', 'right'])
-    for field in field_names:
-        if left[field] != right[field]:
-            writer.writerow([field, left[field], right[field]])
-    return
+class OdooRecordDiff(object):
+    def __init__(self, options):
+        self.options = options
+    
+    def main(self):
+        """Main program."""
+        left_model = self.get_left_model()
+        right_model = self.get_right_model()
+        fields = left_model.execute('fields_get')
+        field_names = sorted(fields.keys())
+        left = left_model.read(self.options.left_id, field_names)
+        right = right_model.read(self.options.right_id, field_names)
+        writer = UnicodeCSVWriter(sys.stdout)
+        if self.options.header:
+            writer.writerow(['field', 'left', 'right'])
+        for field in field_names:
+            if left[field] != right[field]:
+                writer.writerow([field, left[field], right[field]])
+        return
+
+    def get_left_model(self):
+        return self._get_model(self.options.left_db)
+
+    def get_right_model(self):
+        return self._get_model(self.options.right_db)
+
+    def _get_model(self, dbarg):
+        env = OEClientEnv()
+        kwargs = {}
+        if dbarg:
+           kwargs['dbname'] = dbarg
+        return env.get_proxy(**kwargs).get_model(self.options.model)
+            
 
 def get_options():
     """Get options for the script."""
@@ -33,10 +51,12 @@ def get_options():
     parser.add_argument('model', help='e.g. res.partner')
     parser.add_argument('left_id', type=int, help='e.g. 10')
     parser.add_argument('right_id', type=int, help='e.g. 20')
+    parser.add_argument('--left-db', help='Specify name of left database')
+    parser.add_argument('--right-db', help='Specify name of right database')
     parser.add_argument('--no-header', '-H', dest='header', action='store_false', help='leave out the header')
     options = parser.parse_args()
     # extra processing of options here
     return options
 
 if __name__ == "__main__":
-    main(get_options())
+    OdooRecordDiff(get_options()).main()

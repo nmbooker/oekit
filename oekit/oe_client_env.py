@@ -54,12 +54,12 @@ class OEClientEnv(object):
         """
         return self._environ('PASSWORD')
 
-    def get_proxy(self):
+    def get_proxy(self, dbname=None):
         """Return a new OEProxy logged into the database configured in the
         environment.
         """
         oe = oeproxy.OEProxy(self.url)
-        oe.login(self.dbname, self.user, self.password)
+        oe.login(dbname or self.dbname, self.user, self.password)
         return oe
 
     def get_erppeek_client(self, verbose=False):
