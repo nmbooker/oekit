@@ -39,7 +39,7 @@ def create_multi(odoo_model, records):
         recs = odoo_model.execute('create_multi', records)
     except xmlrpclib.Fault as err:
         _logger.error('Import failed: %s' % (err.faultCode,))
-        _logger.error("Multi-user mode - whole upload failed, not continuing processing")
+        _logger.error("Multi-record mode - whole upload failed, not continuing processing")
     else:
         for rec in recs:
             print(rec)
