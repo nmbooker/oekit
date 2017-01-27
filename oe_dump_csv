@@ -28,9 +28,7 @@ def main(options):
 
 def get_options():
     """Get options for the script."""
-    parser = argparse.ArgumentParser(
-               description="Dump the contents of an OpenERP model to CSV",
-             )
+    parser = argparse.ArgumentParser(description="Dump the contents of an OpenERP model to CSV")
     # parser.add_argument() calls here
     add_login_args(parser)
     parser.add_argument('model_name', help='name of model e.g. res.partner')
