@@ -8,39 +8,59 @@ import argparse
 
 from oekit import csvdump
 from oekit.clientfactory.oeproxy import OEProxyClientFactory
-from oekit.config.env import EnvConfig
-from oekit.config.argparse import ArgsConfig, add_url_arg, add_login_args
-from oekit.config.chained import OEConfigChain
 from ast import literal_eval
+from oekit.script import OdooScript
 
-def main(options):
-    """Main program."""
-    factory = OEProxyClientFactory()
-    config = OEConfigChain(configs=[ArgsConfig(options), EnvConfig()])
-    oe = factory.connect(config)
-    extra_kwargs = {}
-    if options.ids_stdin:
-        extra_kwargs['ids'] = [int(line.strip()) for line in sys.stdin]
-    if options.query:
-        extra_kwargs['query'] = literal_eval(options.query)
-    csvdump.dump_csv(oe, options.model_name, options.fields, outfile=sys.stdout, **extra_kwargs)
-    return
+class OEDumpCSV(OdooScript):
+    def description(self):
+        return "Dump the contents of an OpenERP model to CSV"
 
-def get_options():
-    """Get options for the script."""
-    parser = argparse.ArgumentParser(description="Dump the contents of an OpenERP model to CSV")
-    # parser.add_argument() calls here
-    add_login_args(parser)
-    parser.add_argument('model_name', help='name of model e.g. res.partner')
-    parser.add_argument('fields', nargs='+', help='fields you want')
-    parser.add_argument('--ids-stdin', '-i', action='store_true', help='get only the ids from stdin')
-    parser.add_argument('--query', help='Specify a search domain to restrict the records')
-    options = parser.parse_args()
-    # extra processing of options here
-    return options
+    def add_extra_arguments(self, parser):
+        parser.add_argument('model_name', help='name of model e.g. res.partner')
+        parser.add_argument('fields', nargs='+', help='fields you want')
+        parser.add_argument('--ids-stdin', '-i', action='store_true', help='get only the ids from stdin')
+        parser.add_argument('--query', help='Specify a search domain to restrict the records')
+
+    def get_client_factory(self):
+        return OEProxyClientFactory()
+
+    def _main(self):
+        extra_kwargs = {}
+        if self.options.ids_stdin:
+            extra_kwargs['ids'] = [int(line.strip()) for line in sys.stdin]
+        if self.options.query:
+            extra_kwargs['query'] = literal_eval(self.options.query)
+        csvdump.dump_csv(self.oe, self.options.model_name, self.options.fields, outfile=sys.stdout, **extra_kwargs)
 
 if __name__ == "__main__":
-    main(get_options())
+    OEDumpCSV().main()
+        
+        
+
+# def main(options):
+#     """Main program."""
+#     factory = OEProxyClientFactory()
+#     config = OEConfigChain(configs=[ArgsConfig(options), EnvConfig()])
+#     oe = factory.connect(config)
+#     extra_kwargs = {}
+#     if options.ids_stdin:
+#         extra_kwargs['ids'] = [int(line.strip()) for line in sys.stdin]
+#     if options.query:
+#         extra_kwargs['query'] = literal_eval(options.query)
+#     csvdump.dump_csv(oe, options.model_name, options.fields, outfile=sys.stdout, **extra_kwargs)
+#     return
+
+# def get_options():
+#     """Get options for the script."""
+#     parser = argparse.ArgumentParser(description="Dump the contents of an OpenERP model to CSV")
+#     # parser.add_argument() calls here
+#     add_login_args(parser)
+#     options = parser.parse_args()
+#     # extra processing of options here
+#     return options
+
+# if __name__ == "__main__":
+#     main(get_options())
 
 
 
