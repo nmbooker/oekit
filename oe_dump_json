@@ -5,7 +5,6 @@
 
 import sys
 import argparse
-import json
 
 from oekit import oe_client_env
 def main(options):
@@ -14,7 +13,12 @@ def main(options):
     ids = get_ids(options, oe)
     if ids:
         records = oe.execute(options.model_name, 'read', ids, options.fields)
-        json.dump(records, sys.stdout)
+        if options.yaml:
+            import yaml
+            yaml.dump(records, sys.stdout)
+        else:
+            import json
+            json.dump(records, sys.stdout)
     else:
         # ids was empty - don't call OpenERP again
         pass
@@ -35,6 +39,7 @@ def get_options():
     parser.add_argument('model_name', help='name of model e.g. res.partner')
     parser.add_argument('fields', nargs='+', help='fields you want')
     parser.add_argument('--ids-stdin', '-i', action='store_true', help='get only the ids from stdin')
+    parser.add_argument('--yaml', '-y', action='store_true', help='create YAML instead')
     options = parser.parse_args()
     # extra processing of options here
     return options
