@@ -8,7 +8,7 @@ Example:
     oe = factory.connect(config)
 """
 
-import ..oeproxy
+from .. import oeproxy
 
 class OEProxyClientFactory(object):
     """Client factory for oeproxy
