@@ -4,24 +4,36 @@
 """
 
 import sys
-import argparse
 import csv
 from oekit import oe_client_env
 from itertools import starmap
+from oekit.clientfactory.oeproxy import OEProxyClientFactory
+from oekit.script import OdooScript
 
-def main(options):
-    """Main program."""
-    cl = oe_client_env.OEClientEnv()
-    oe = cl.get_proxy()
-    fields = oe.execute(options.model_name, 'fields_get')
-    if options.names_only:
-        sys.stdout.writelines(('%s\n' % field) for field in sorted(fields))
-    else:
-        outcsv = csv.writer(sys.stdout)
-        outcsv.writerow(['field_name', 'type', 'relation', 'string', 'required'])
-        outcsv.writerows(field_rows(fields))
-    return
+class OEDescribe(OdooScript):
+    def description(self):
+        return "get fields in an OpenERP model as CSV report"
 
+    def add_extra_arguments(self, parser):
+        parser.add_argument('model_name', help='name of model')
+        parser.add_argument('-n', '--names-only', action='store_true',
+            help='only list field names, with no header'
+        )
+
+    def get_client_factory(self):
+        return OEProxyClientFactory()
+
+    def _main(self):
+        oe = self.oe
+        options = self.options
+        fields = oe.execute(options.model_name, 'fields_get')
+        if options.names_only:
+            sys.stdout.writelines(('%s\n' % field) for field in sorted(fields))
+        else:
+            outcsv = csv.writer(sys.stdout)
+            outcsv.writerow(['field_name', 'type', 'relation', 'string', 'required'])
+            outcsv.writerows(field_rows(fields))
+        
 def field_rows(fields):
     """Format rows"""
     return starmap(format_field_row, sorted(fields.items(), key=first))
@@ -34,22 +46,28 @@ def first(a_tuple):
     """Get first item from an indexable sequence, e.g. a tuple"""
     return a_tuple[0]
 
-def get_options():
-    """Get options for the script."""
-    parser = argparse.ArgumentParser(
-               description="get fields in an OpenERP model as CSV report",
-             )
-    # parser.add_argument() calls here
-    parser.add_argument('model_name', help='name of model')
-    parser.add_argument('-n', '--names-only', action='store_true',
-        help='only list field names, with no header'
-    )
-    options = parser.parse_args()
-    # extra processing of options here
-    return options
-
 if __name__ == "__main__":
-    main(get_options())
+    OEDescribe().main()
+
+# def main(options):
+#     """Main program."""
+#     cl = oe_client_env.OEClientEnv()
+#     oe = cl.get_proxy()
+#     return
+
+
+# def get_options():
+#     """Get options for the script."""
+#     parser = argparse.ArgumentParser(
+#                description=,
+#              )
+#     # parser.add_argument() calls here
+#     options = parser.parse_args()
+#     # extra processing of options here
+#     return options
+
+# if __name__ == "__main__":
+#     main(get_options())
 
 
 __COPYRIGHT__ = """
