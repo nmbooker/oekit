@@ -5,7 +5,6 @@
 
 import sys
 import csv
-from oekit import oe_client_env
 from itertools import starmap
 from oekit.clientfactory.oeproxy import OEProxyClientFactory
 from oekit.script import OdooScript
