@@ -34,8 +34,16 @@ class OdooRecordDiff(object):
         """Main program."""
         left_model = self.diff_db.get_left_model()
         right_model = self.diff_db.get_right_model()
-        fields = left_model.execute('fields_get')
-        field_names = sorted(fields.keys())
+        left_fields = left_model.execute('fields_get')
+        right_fields = right_model.execute('fields_get')
+        common_field_names = set(left_fields) & set(right_fields)
+        left_only_field_names = set(left_fields) - set(right_fields)
+        if left_only_field_names:
+            sys.stderr.write("Fields only on left: {}\n".format(', '.join(left_only_field_names)))
+        right_only_field_names = set(right_fields) - set(left_fields)
+        if right_only_field_names:
+            sys.stderr.write( "Fields only on right: {}\n".format(', '.join(right_only_field_names)) )
+        field_names = sorted(common_field_names)
         left = left_model.read(self.options.left_id, field_names)
         if not left:
             sys.stderr.write("Left record {} does not exist\n".format(self.options.left_id))
