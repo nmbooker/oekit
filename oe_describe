@@ -49,25 +49,6 @@ def first(a_tuple):
 if __name__ == "__main__":
     OEDescribe().main()
 
-# def main(options):
-#     """Main program."""
-#     cl = oe_client_env.OEClientEnv()
-#     oe = cl.get_proxy()
-#     return
-
-
-# def get_options():
-#     """Get options for the script."""
-#     parser = argparse.ArgumentParser(
-#                description=,
-#              )
-#     # parser.add_argument() calls here
-#     options = parser.parse_args()
-#     # extra processing of options here
-#     return options
-
-# if __name__ == "__main__":
-#     main(get_options())
 
 
 __COPYRIGHT__ = """
