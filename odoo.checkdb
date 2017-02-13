@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import sys
+
+from oekit.clientfactory import peek
+from oekit.script import OdooScript
+
+class OdooChecker(OdooScript):
+    """Main Odoo Checker program"""
+
+    def description(self):
+        return "check odoo database for configuration smells"
+
+    def get_client_factory(self):
+        return peek.ClientFactory()
+
+    def _main(self):
+        self.Currency = self.oe.model('res.currency')
+        base_currency_ids = self.Currency.search([('base', '=', True)])
+        if not base_currency_ids:
+            self.warn("No base currency set")
+        else:
+            base_currencies = self.base_currency_ids
+            for currency in base_currencies:
+                if currency.rate != 1:
+                    self.warn("Currency {} is base currency but has rate {}.  It should probably be 1.00".format(currency.name, currency.rate))
+
+    def warn(self, msg):
+        sys.stdout.write(msg)
+
+if __name__ == "__main__":
+    OdooChecker().main()
