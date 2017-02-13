@@ -23,7 +23,7 @@ class OdooChecker(OdooScript):
             base_currencies = self.base_currency_ids
             for currency in base_currencies:
                 if currency.rate != 1:
-                    self.warn("Currency {} is base currency but has rate {}.  It should probably be 1.00".format(currency.name, currency.rate))
+                    self.warn("Currency {} is base currency but has rate {}.  It should probably be 1.00\n".format(currency.name, currency.rate))
 
     def warn(self, msg):
         sys.stdout.write(msg)
