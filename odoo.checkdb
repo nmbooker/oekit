@@ -15,8 +15,8 @@ class OdooChecker(OdooScript):
         return peek.ClientFactory()
 
     def _main(self):
-        self.Currency = self.oe.model('res.currency')
-        base_currency_ids = self.Currency.search([('base', '=', True)])
+        Currency = self.oe.model('res.currency')
+        base_currency_ids = Currency.search([('base', '=', True)])
         if not base_currency_ids:
             self.warn("No base currency set")
         else:
