@@ -3,12 +3,6 @@
 
 Author: Nick Booker
 License: GPLv3
-
-Here are some of the modules:
-    oeproxy: simplifies talking to an OpenERP server via XML-RPC a bit
-    oe_client_env: get login info and an OEProxy using data from environment variables
-    csvdump: helpers for dumping out records to CSV files
-    oe_dateutil: helpers for validating, formatting and parsing dates for OpenERP
 """
 
 from .. import oeproxy
@@ -29,6 +23,49 @@ class OEProxyClientFactory(object):
         oe = oeproxy.OEProxy(config['url'])
         oe.login(config['dbname'], config['user'], config['password'])
         return oe
+
+
+class peek:
+    """Client factories for erppeek.
+
+    Example:
+
+        factory = erppeek_factory.ClientFactory()
+        config = OEClientChain(clients=[...])
+        oe = factory.connect(config)
+    """
+    class Base(object):
+        def __init__(self, verbose=False):
+            self.verbose = verbose
+
+    class DatabaseManagerFactory(Base):
+        """Client factory for an erppeek.Client, but with just enough to do
+        database management.
+        """
+        def connect(self, config):
+            import erppeek
+            return erppeek.Client(
+                server=config['url'],
+                verbose=self.verbose,
+            )
+
+    class ClientFactory(Base):
+        """Client factory for erppeek, connected to a database.
+        """
+        def connect(self, config):
+            """Return a new erppeek.Client.
+
+            Note you must have the erppeek package in the python path
+            for this to work, or you will get an ImportError on call.
+            """
+            import erppeek
+            return erppeek.Client(
+                server=config['url'],
+                db=config['dbname'],
+                user=config['user'],
+                password=config['password'],
+                verbose=self.verbose
+            )
 
 __COPYRIGHT__ = """
 
