@@ -6,7 +6,7 @@
 import sys
 import csv
 from itertools import starmap
-from oekit.clientfactory.oeproxy import OEProxyClientFactory
+from oekit.clientfactory import OEProxyClientFactory
 from oekit.script import OdooScript
 
 class OEDescribe(OdooScript):

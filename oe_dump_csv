@@ -7,7 +7,7 @@ import sys
 import argparse
 
 from oekit import csvdump
-from oekit.clientfactory.oeproxy import OEProxyClientFactory
+from oekit.clientfactory import OEProxyClientFactory
 from ast import literal_eval
 from oekit.script import OdooScript
 

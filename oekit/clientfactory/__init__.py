@@ -11,11 +11,30 @@ Here are some of the modules:
     oe_dateutil: helpers for validating, formatting and parsing dates for OpenERP
 """
 
+from .. import oeproxy
+
+class OEProxyClientFactory(object):
+    """Client factory for oeproxy
+
+    Example:
+
+    factory = OEProxyClientFactory()
+    config = OEClientChain(clients=[...])
+    oe = factory.connect(config)
+    """
+    def connect(self, config):
+        """Return a new OEProxy logged into the database configured in the
+        environment.
+        """
+        oe = oeproxy.OEProxy(config['url'])
+        oe.login(config['dbname'], config['user'], config['password'])
+        return oe
+
 __COPYRIGHT__ = """
 
 This program is part of oekit: https://github.com/nmbooker/oekit
 
-Copyright (c) 2015 Nicholas Booker <NMBooker@gmail.com>
+Copyright (c) 2017 Nicholas Booker <NMBooker@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
