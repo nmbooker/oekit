@@ -5,7 +5,7 @@ Author: Nick Booker
 License: GPLv3
 """
 
-from .. import oeproxy
+from . import oeproxy
 
 class OEProxyClientFactory(object):
     """Client factory for oeproxy
