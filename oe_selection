@@ -24,7 +24,7 @@ def main(options):
 def get_options():
     """Get options for the script."""
     parser = argparse.ArgumentParser(
-               description="get fields in an OpenERP model as CSV report",
+               description="get available options for a Selection field, as CSV detailing the internal name and the string representation",
              )
     # parser.add_argument() calls here
     parser.add_argument('model_name', help='name of model')
@@ -42,7 +42,7 @@ __COPYRIGHT__ = """
 
 This program is part of oekit: https://github.com/nmbooker/oekit
 
-Copyright (c) 2014 Nicholas Booker <NMBooker@gmail.com>
+Copyright (c) 2017 Nicholas Booker <NMBooker@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
