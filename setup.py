@@ -14,6 +14,7 @@ setuptools.setup(
         'oe_selection',
         'odoo.createdb',
         'odoo.dropdb',
+        'odoo.lsmod',
         'odoo.insmod',
         'odoo.rmmod',
         'odoo.update_modules_list',
