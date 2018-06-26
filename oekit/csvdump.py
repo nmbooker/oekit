@@ -73,8 +73,13 @@ def get_rows(oe_proxy, model, ids, fields):
     records = oe_proxy.execute(model, 'read', ids, fields)
     rows = []
     rows.append(fields)
+    warned = set()
     for record in records:
-        row = [_fixup_value(schema, field, record[field]) for field in fields]
+        missing_fields = frozenset(fields) - frozenset(record)
+        if missing_fields not in warned:
+            sys.stderr.write("Warning: fields not returned: {!r}\n".format(sorted(missing_fields)))
+            warned.add(missing_fields)
+        row = [_fixup_value(schema, field, record.get(field, False)) for field in fields]
         rows.append(row)
     return rows
 
