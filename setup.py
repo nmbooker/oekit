@@ -27,5 +27,6 @@ setuptools.setup(
         'odoo.sysparams',
         'odoo.gpasswd',
         'odoo.lsgrp',
+        'odoo.passwd',
     ],
 )
