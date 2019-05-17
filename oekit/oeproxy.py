@@ -6,7 +6,10 @@ License: GPLv2
 See __COPYRIGHT__ variable defined at bottom of the code.
 """
 
-import xmlrpclib
+try:
+    import xmlrpclib
+except ImportError:
+    import xmlrpc.client as xmlrpclib
 
 class NotLoggedInError(Exception):
     pass
