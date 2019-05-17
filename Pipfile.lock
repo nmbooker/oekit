@@ -1,0 +1,32 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "076685d9336de1d3e1a19d7702190580779950aef7faae9325664e7fd6be3812"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.6"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "erppeek": {
+            "hashes": [
+                "sha256:0c30bdea453fd5daff1f40e508b919035e51004588dc56dc4c17349477d7e65f",
+                "sha256:5db9f4c758cac025c5c1b96418ef4ec1db604a2f9365ed6f1f893af38ce83ee1"
+            ],
+            "version": "==1.7.1"
+        },
+        "oekit": {
+            "editable": true,
+            "path": "."
+        }
+    },
+    "develop": {}
+}
