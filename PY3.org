@@ -22,8 +22,7 @@
 - [ ] odoo.usermod
 - [X] odoo.xmlid_of
 - [X] oe_describe
-- [ ] oe_dump_csv
-  - Name 'unicode' is not defined
+- [X] oe_dump_csv
 - [ ] oe_dump_json
 - [ ] oe_list_models
 - [ ] oe_selection

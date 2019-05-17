@@ -9,6 +9,7 @@ setuptools.setup(
     install_requires = [
         'erppeek>=1.6',
         'funbox',
+        'six>=1.12.0',
     ],
     scripts = [
         'oe_dump_csv',

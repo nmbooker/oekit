@@ -18,6 +18,8 @@ Otherwise you can use a combination of:
 import csv
 import sys
 
+import six
+
 def dump_csv(oe_proxy, model, fields, ids=None, query=None, outfile=None):
     """Dump the model to outfile.
 
@@ -79,7 +81,7 @@ def get_rows(oe_proxy, model, ids, fields):
     return rows
 
 def _cvtunicode(obj):
-    if isinstance(obj, unicode):
+    if isinstance(obj, six.text_type):
         return obj.encode('utf-8')
     else:
         return obj
