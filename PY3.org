@@ -1,0 +1,29 @@
+- [ ] odoo.backupdb
+- [ ] odoo.check_vat_number
+- [ ] odoo.check_vat_numbers
+- [X] odoo.createdb
+- [ ] odoo.create_records
+- [ ] odoo.diff-records
+- [X] odoo.dropdb
+- [ ] odoo.fields_view_get
+- [ ] odoo.find-models-without-access-control
+- [ ] odoo.getrep
+- [ ] odoo.gpasswd
+- [X] odoo.insmod
+- [X] odoo.lsdbs
+- [X] odoo.lsgrp
+- [X] odoo.lsmod
+- [X] odoo.passwd
+- [ ] odoo.putrep
+- [X] odoo.rmmod
+- [ ] odoo.rm_record
+- [ ] odoo.sysparams
+- [X] odoo.update_modules_list
+- [ ] odoo.usermod
+- [X] odoo.xmlid_of
+- [X] oe_describe
+- [ ] oe_dump_csv
+  - Name 'unicode' is not defined
+- [ ] oe_dump_json
+- [ ] oe_list_models
+- [ ] oe_selection
